@@ -18,10 +18,13 @@ mongo = PyMongo(app)
 
 
 @app.route("/")
-@app.route("/show_finishers")
-def get_finishers():
-    finishers = mongo.db.finishers.find()
-    return render_template("finishers.html", finishers=finishers)
+def landing_page():
+    return render_template("landing.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    return render_template("register.html")
 
 
 if __name__ == "__main__":
