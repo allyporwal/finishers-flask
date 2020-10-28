@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finishers</title>
-</head>
-<body>
-Hello
-    {% for finisher in finishers %}
-        {{ finisher.finisher_name }}<br>
-        {{ finisher.category_name }}<br>
-    {% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<h1>Test</h1>
+
+{% for finisher in finishers %}
+    {{ finisher.finisher_name}}<br>
+    {{ finisher.exercises[0].exercise_name }}: {{ finisher.exercises[0].set }} {{ finisher.exercises[0].set_type }}
+{% endfor %}
+{% endblock %}
