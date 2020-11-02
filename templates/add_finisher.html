@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block content %}
+<h1>add</h1>
+<form method="POST" action="{{ url_for('add_finisher') }}">
+  <div class="row">
+    <div class="input-field">
+        <input name="finisher-name" type="text" class="validate" minlength="5" maxlength="30" required/>
+        <label for="username">Name your finisher:</label>
+    </div>
+    <label for="categories">Select category:</label>
+    <select name="categories" id="categories">
+      {% for category in categories %}
+      <option value="{{ category.category_name }}">
+        {{ category.category_name }}
+      </option>
+      {% endfor %}
+    </select>
+  <div class="row">
+  <label for="exercises">Select exercise:</label>
+    <select name="exercises">
+      {% for exercise in exercises %}
+      <option value="{{ exercise.exercise_name }}">
+        {{ exercise.exercise_name }}
+      </option>
+      {% endfor %}
+    </select>    
+  </div>  
+  </div>
+  <button type="submit" class="col s12 btn-large">submit</button>
+</form>
+{% endblock %}

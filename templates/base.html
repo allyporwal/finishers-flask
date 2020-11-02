@@ -24,21 +24,34 @@
 				<a href="#!" class="brand-logo">Finishers</a>
 				<a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 				<ul class="right hide-on-med-and-down">
-					<li><a href="sass.html">Browse</a></li>
-					<li><a href="badges.html">Create</a></li>
-					<li><a href="collapsible.html">Register</a></li>
-					<li><a href="mobile.html">Login</a></li>
+					<li><a href="#">Browse</a></li>
+					<li><a href="{{ url_for('add_finisher') }}">Create</a></li>
+					<li><a href="#">Register</a></li>
+					<li><a href="#">Login</a></li>
 				</ul>
 			</div>
 		</nav>
-
+        <!-- Mobile sidenav -->
 		<ul class="sidenav" id="mobile-demo">
-			<li><a href="sass.html">Sass</a></li>
-			<li><a href="badges.html">Components</a></li>
-			<li><a href="collapsible.html">Javascript</a></li>
-			<li><a href="mobile.html">Mobile</a></li>
+			<li><a href="#">Browse</a></li>
+			<li><a href="{{ url_for('add_finisher') }}">Create</a></li>
+			<li><a href="#">Register</a></li>
+			<li><a href="#">Login</a></li>
 		</ul>
 	</header>
+
+    <section>
+    <!-- flash messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="row flashes">
+                        <h4 class="light-blue lighten-4 center-align">{{ message }}</h4>
+                    </div>
+                {% endfor %}    
+            {% endif %}
+        {% endwith %}
+    </section>
 
 	{% block content %}
 	{% endblock %}

@@ -1,8 +1,9 @@
-{% extends "base.html" %} 
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <section>
-<button class="btn-large light-blue darken-1 text-shadow">
-          <a href="{{ url_for('register') }}" >Sign Up<i class="fas fa-plus-square right"></i></a>
-        </button>
+  <button class="btn-large light-blue darken-1 text-shadow">
+    <a href="{{ url_for('register') }}"
+      >Sign Up<i class="fas fa-plus-square right"></i
+    ></a>
+  </button>
 </section>
 {% endblock %}
