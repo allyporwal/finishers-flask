@@ -1,29 +1,72 @@
-{% extends "base.html" %} {% block content %}
-<h1>add</h1>
+{% extends "base.html" %} 
+{% block content %}
 <form method="POST" action="{{ url_for('add_finisher') }}">
+  <div class="input-field">
+    <input
+      name="finisher_name"
+      type="text"
+      class="validate"
+      minlength="5"
+      maxlength="30"
+      required
+    />
+    <label for="finisher_name">Name your finisher:</label>
+  </div>
+  <label for="categories">Select category:</label>
+  <select name="categories" id="categories">
+    {% for category in categories %}
+    <option value="{{ category.category_name }}">
+      {{ category.category_name }}
+    </option>
+    {% endfor %}
+  </select>
   <div class="row">
-    <div class="input-field">
-        <input name="finisher-name" type="text" class="validate" minlength="5" maxlength="30" required/>
-        <label for="username">Name your finisher:</label>
-    </div>
-    <label for="categories">Select category:</label>
-    <select name="categories" id="categories">
-      {% for category in categories %}
-      <option value="{{ category.category_name }}">
-        {{ category.category_name }}
-      </option>
-      {% endfor %}
-    </select>
-  <div class="row">
-  <label for="exercises">Select exercise:</label>
+    <label for="exercises">Exercise 1:</label>
     <select name="exercises">
       {% for exercise in exercises %}
       <option value="{{ exercise.exercise_name }}">
         {{ exercise.exercise_name }}
       </option>
       {% endfor %}
-    </select>    
-  </div>  
+    </select>
+    <div class="input-field">
+      <input
+        name="for-metres-reps-seconds"
+        type="text"
+        class="validate"
+        minlength="1"
+        maxlength="30"
+        required
+      />
+      <label for="for-metres-reps-seconds">For:</label>
+    </div>
+    <label for="metres-reps-seconds">Select exercise:</label>
+    <select name="metres-reps-seconds">
+      <option value="seconds">seconds</option>
+      <option value="reps">reps</option>
+      <option value="metres">metres</option>
+    </select>
+   <div class="input-field">
+      <input
+        name="time_limit"
+        type="number"
+        class="validate"
+        minlength="1"
+        required
+      />
+      <label for="time_limit">Time limit:</label>
+    </div>
+    <div class="input-field">
+      <input
+        name="instructions"
+        type="text"
+        class="validate"
+        minlength="1"
+        maxlength="200"
+        required
+      />
+      <label for="instructions">Instructions:</label>
+    </div>  
   </div>
   <button type="submit" class="col s12 btn-large">submit</button>
 </form>

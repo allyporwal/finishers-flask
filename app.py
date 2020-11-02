@@ -40,6 +40,21 @@ def register():
 def add_finisher():
     categories = mongo.db.categories.find()
     exercises = mongo.db.exercises.find()
+    if request.method == "POST":
+        finisher = {
+            "finisher_name": request.form.get("finisher_name"),
+            "category_name": request.form.get("categories"),
+            "exercises": [
+                {"exercise_name": request.form.get("exercises"),
+                 "set": request.form.get("for-metres-reps-seconds"),
+                 "set_type": request.form.get("metres-reps-seconds")
+                 }
+            ],
+            "time_limit": request.form.get("time-limit"),
+            "instructions": request.form.get("instructions"),
+            "reviews": []
+        }
+        mongo.db.finishers.insert_one(finisher)
     return render_template(
         "add_finisher.html", categories=categories, exercises=exercises)
 
