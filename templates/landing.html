@@ -6,4 +6,9 @@
     ></a>
   </button>
 </section>
+
+{% for finisher in finishers %}
+    {{ finisher.exercises.exercise_name }}<br>
+{% endfor %}
+
 {% endblock %}

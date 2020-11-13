@@ -1,73 +1,151 @@
-{% extends "base.html" %} 
-{% block content %}
-<form method="POST" action="{{ url_for('add_finisher') }}">
-  <div class="input-field">
-    <input
-      name="finisher_name"
-      type="text"
-      class="validate"
-      minlength="5"
-      maxlength="30"
-      required
-    />
-    <label for="finisher_name">Name your finisher:</label>
-  </div>
-  <label for="categories">Select category:</label>
-  <select name="categories" id="categories">
-    {% for category in categories %}
-    <option value="{{ category.category_name }}">
-      {{ category.category_name }}
-    </option>
-    {% endfor %}
-  </select>
-  <div class="row">
-    <label for="exercises">Exercise 1:</label>
-    <select name="exercises">
-      {% for exercise in exercises %}
-      <option value="{{ exercise.exercise_name }}">
-        {{ exercise.exercise_name }}
-      </option>
-      {% endfor %}
-    </select>
-    <div class="input-field">
-      <input
-        name="for-metres-reps-seconds"
-        type="text"
-        class="validate"
-        minlength="1"
-        maxlength="30"
-        required
-      />
-      <label for="for-metres-reps-seconds">For:</label>
+{% extends "base.html" %} {% block content %}
+<h1>Create finisher</h1>
+<br />
+
+<!-- Create finisher form -->
+
+<div>
+  <form method="POST" action="{{ url_for('add_finisher') }}">
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="finisher_name" type="text" class="validate" required />
+        <label for="finisher_name">Name your finisher:</label>
+      </div>
+      <div class="input-field col s6">
+        <select name="categories" required>
+          <option value="" disabled selected>Choose your option</option>
+          {% for category in categories %}
+          <option value="{{ category.category_name }}">
+            {{ category.category_name }}
+          </option>
+          {% endfor %}
+        </select>
+        <label for="">Select category</label>
+      </div>
     </div>
-    <label for="metres-reps-seconds">Select exercise:</label>
-    <select name="metres-reps-seconds">
-      <option value="seconds">seconds</option>
-      <option value="reps">reps</option>
-      <option value="metres">metres</option>
-    </select>
-   <div class="input-field">
-      <input
-        name="time_limit"
-        type="number"
-        class="validate"
-        minlength="1"
-        required
-      />
-      <label for="time_limit">Time limit:</label>
+
+    <!-- Exercise 1 -->
+    
+    <div class="row">
+      <div class="input-field col s6">
+        <input name="exercise" type="text" class="validate" required />
+        <label for="exercise">Exercise 1:</label>
+      </div>
+      <div class="input-field col s3">
+        <input
+          name="reps"
+          type="number"
+          class="validate"
+          required
+        />
+        <label for="set">for:</label>
+      </div>
+      <div class="input-field col s3">
+        <select id="first_exercise_select" name="set_type" required>
+          <option value="set_type" disabled selected>Choose your option</option>  
+          <option value="reps">reps</option>
+          <option value="seconds">seconds</option>
+          <option value="metres">metres</option>
+        </select>
+        <label for="metres_reps_seconds">Reps/time/distance:</label>
+      </div>
     </div>
-    <div class="input-field">
-      <input
-        name="instructions"
-        type="text"
-        class="validate"
-        minlength="1"
-        maxlength="200"
-        required
-      />
-      <label for="instructions">Instructions:</label>
-    </div>  
-  </div>
-  <button type="submit" class="col s12 btn-large">submit</button>
-</form>
+
+    <!-- Exercise 2  -->
+
+    <div id="second_exercise" class="row">
+      <div class="input-field col s6">
+        <input name="exercise_2" type="text" class="validate" required />
+        <label for="exercise_2">Exercise 2:</label>
+      </div>
+      <div class="input-field col s3">
+        <input
+          name="reps_2"
+          type="number"
+          class="validate"
+          required
+        />
+        <label for="for_metres_reps_seconds_2">for:</label>
+      </div>
+      <div class="input-field col s3">
+        <select id="second_exercise_select" name="set_type_2" required>
+          <option value="" disabled selected>Choose your option</option>  
+          <option value="reps">reps</option>
+          <option value="seconds">seconds</option>
+          <option value="metres">metres</option>
+        </select>
+        <label for="metres_reps_seconds_2">Reps/time/distance:</label>
+      </div>
+    </div>
+
+    <!-- Exercise 3 -->
+
+    <div id="third_exercise" class="row">
+      <div class="input-field col s6">
+        <input name="exercise_3" type="text" class="validate" required />
+        <label for="exercise_3">Exercise 3:</label>
+      </div>
+      <div class="input-field col s3">
+        <input
+          name="reps_3"
+          type="number"
+          class="validate"
+          required
+        />
+        <label for="for_metres_reps_seconds_3">for:</label>
+      </div>
+      <div class="input-field col s3">
+        <select id="third_exercise_select" name="set_type_3" required>
+          <option value="" disabled selected>Choose your option</option>  
+          <option value="reps">reps</option>
+          <option value="seconds">seconds</option>
+          <option value="metres">metres</option>
+        </select>
+        <label for="metres_reps_seconds_3">Reps/time/distance:</label>
+      </div>
+    </div>
+
+    <!-- Exercise 4 -->
+
+    <div id="fourth_exercise" class="row">
+      <div class="input-field col s6">
+        <input name="exercise_4" type="text" class="validate" />
+        <label for="exercise_4">Exercise 4:</label>
+      </div>
+      <div class="input-field col s3">
+        <input
+          name="for_metres_reps_seconds_4"
+          type="number"
+          class="validate"
+        />
+        <label for="for_metres_reps_seconds_4">for:</label>
+      </div>
+      <div class="input-field col s3">
+        <select id="fourth_exercise_select" name="metres_reps_seconds_4" >
+          <option value="" disabled selected>Choose your option</option>  
+          <option value="reps">reps</option>
+          <option value="seconds">seconds</option>
+          <option value="metres">metres</option>
+        </select>
+        <label for="metres_reps_seconds_4">Reps/time/distance:</label>
+      </div>
+    </div>
+
+    <!--  Instructions, time limit and submit button -->
+
+    <div class="row">
+      <div class="input-field col s12">
+        <textarea name="instructions" class="materialize-textarea" required></textarea>
+        <label for="instructions">Instructions:</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s3">
+        <input name="time_limit" type="number" class="validate" />
+        <label for="time_limit">Time limit:</label>
+      </div>
+    </div>
+    <button type="submit" class="col s12 btn-large">submit</button>
+  </form>
+</div>
 {% endblock %}

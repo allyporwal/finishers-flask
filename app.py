@@ -21,7 +21,11 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def landing_page():
-    return render_template("landing.html")
+    finishers = mongo.db.finishers.aggregate([
+        {"$unwind": "$exercises"},
+        {"$match": {"exercises.exercise_name": {"$ne": None}}}
+    ])
+    return render_template("landing.html", finishers=finishers)
 
 
 # Allow a user to register
@@ -39,24 +43,33 @@ def register():
 @app.route("/add_finisher", methods=["GET", "POST"])
 def add_finisher():
     categories = mongo.db.categories.find()
-    exercises = mongo.db.exercises.find()
     if request.method == "POST":
+        # exercises = []
+        tester = [[], [], []]
+        for key, val in request.form.items():
+            if key.startswith("exercise"):
+                tester[0].append(val)
+            if key.startswith("reps"):
+                tester[1].append(val)
+            if key.startswith("set_type"):
+                tester[2].append(val)
+        tester2 = [{"exercise_name": a,
+                    "set": b,
+                    "set_type": c
+                    } for (a, b, c) in zip(*tester)]
         finisher = {
             "finisher_name": request.form.get("finisher_name"),
             "category_name": request.form.get("categories"),
-            "exercises": [
-                {"exercise_name": request.form.get("exercises"),
-                 "set": request.form.get("for-metres-reps-seconds"),
-                 "set_type": request.form.get("metres-reps-seconds")
-                 }
-            ],
-            "time_limit": request.form.get("time-limit"),
+            # "exercises": exercises,
+            "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
-            "reviews": []
+            "reviews": [],
+            "tester": tester,
+            "tester2": tester2
         }
         mongo.db.finishers.insert_one(finisher)
     return render_template(
-        "add_finisher.html", categories=categories, exercises=exercises)
+        "add_finisher.html", categories=categories)
 
 
 if __name__ == "__main__":
