@@ -44,28 +44,26 @@ def register():
 def add_finisher():
     categories = mongo.db.categories.find()
     if request.method == "POST":
-        # exercises = []
-        tester = [[], [], []]
+        form_input_nested = [[], [], []]
         for key, val in request.form.items():
             if key.startswith("exercise"):
-                tester[0].append(val)
+                form_input_nested[0].append(val)
             if key.startswith("reps"):
-                tester[1].append(val)
+                form_input_nested[1].append(val)
             if key.startswith("set_type"):
-                tester[2].append(val)
-        tester2 = [{"exercise_name": a,
-                    "set": b,
-                    "set_type": c
-                    } for (a, b, c) in zip(*tester)]
+                form_input_nested[2].append(val)
+        exercises = [{"exercise_name": a,
+                      "set": b,
+                      "set_type": c
+                      } for (a, b, c) in zip(*form_input_nested)]
         finisher = {
             "finisher_name": request.form.get("finisher_name"),
             "category_name": request.form.get("categories"),
-            # "exercises": exercises,
+            "exercises": exercises,
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
             "reviews": [],
-            "tester": tester,
-            "tester2": tester2
+            # "tester": tester,
         }
         mongo.db.finishers.insert_one(finisher)
     return render_template(

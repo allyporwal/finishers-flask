@@ -1,11 +1,3 @@
-#second_exercise {
-    display: none;
-}
-
-#third_exercise {
-    display: none;
-}
-
-#fourth_exercise {
+.hidden_exercise {
     display: none;
 }
