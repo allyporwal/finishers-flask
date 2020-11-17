@@ -71,7 +71,8 @@ def add_finisher():
 
 @app.route("/browse_finishers")
 def browse_finishers():
-    return render_template("browse_finishers.html")
+    finishers = list(mongo.db.finishers.find())
+    return render_template("browse_finishers.html", finishers=finishers)
 
 
 if __name__ == "__main__":
