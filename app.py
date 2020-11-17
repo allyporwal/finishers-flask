@@ -21,11 +21,7 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def landing_page():
-    finishers = mongo.db.finishers.aggregate([
-        {"$unwind": "$exercises"},
-        {"$match": {"exercises.exercise_name": {"$ne": None}}}
-    ])
-    return render_template("landing.html", finishers=finishers)
+    return render_template("landing.html")
 
 
 # Allow a user to register
@@ -56,16 +52,19 @@ def add_finisher():
                       "set": b,
                       "set_type": c
                       } for (a, b, c) in zip(*form_input_nested)]
+        time_limit_toggle = "on" if request.form.get(
+            "time_limit_toggle") else "off"
         finisher = {
             "finisher_name": request.form.get("finisher_name"),
             "category_name": request.form.get("categories"),
             "exercises": exercises,
+            "time_limit_toggle": time_limit_toggle,
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
-            "reviews": [],
-            # "tester": tester,
+            "reviews": []
         }
         mongo.db.finishers.insert_one(finisher)
+        return redirect(url_for("browse_finishers"))
     return render_template(
         "add_finisher.html", categories=categories)
 

@@ -1,5 +1,13 @@
 $(document).ready(function () {
   $("select").formSelect();
+  $("#time_limit").prop("disabled", true);
+  $("#time_limit_toggle").change(function() {
+      if ($(this).prop("checked") == false) {
+            $("#time_limit").prop("disabled", true);
+      } else if ($(this).prop("checked") == true) {
+            $("#time_limit").prop("disabled", false);
+      } 
+  })
 });
 
 $("#exercise_set_type_select").change(function() {
