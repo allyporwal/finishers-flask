@@ -69,6 +69,11 @@ def add_finisher():
         "add_finisher.html", categories=categories)
 
 
+@app.route("/browse_finishers")
+def browse_finishers():
+    return render_template("browse_finishers.html")
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=int(os.environ.get("PORT")),

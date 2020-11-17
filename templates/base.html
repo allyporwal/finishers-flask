@@ -24,7 +24,7 @@
 				<a href="#!" class="brand-logo">Finishers</a>
 				<a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 				<ul class="right hide-on-med-and-down">
-					<li><a href="#">Browse</a></li>
+					<li><a href="{{ url_for('browse_finishers') }}">Browse</a></li>
 					<li><a href="{{ url_for('add_finisher') }}">Create</a></li>
 					<li><a href="#">Register</a></li>
 					<li><a href="#">Login</a></li>
@@ -33,7 +33,7 @@
 		</nav>
         <!-- Mobile sidenav -->
 		<ul class="sidenav" id="mobile-demo">
-			<li><a href="#">Browse</a></li>
+			<li><a href="{{ url_for('browse_finishers') }}">Browse</a></li>
 			<li><a href="{{ url_for('add_finisher') }}">Create</a></li>
 			<li><a href="#">Register</a></li>
 			<li><a href="#">Login</a></li>
