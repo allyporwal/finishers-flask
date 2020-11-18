@@ -73,7 +73,8 @@ def add_finisher():
 def browse_finishers():
     finishers = list(mongo.db.finishers.find())
     categories = list(mongo.db.categories.find())
-    return render_template("browse_finishers.html", finishers=finishers, categories=categories)
+    return render_template(
+        "browse_finishers.html", finishers=finishers, categories=categories)
 
 
 if __name__ == "__main__":

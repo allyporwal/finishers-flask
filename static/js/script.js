@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('.sidenav').sidenav();
     $("select").formSelect();
     $('.tooltipped').tooltip();
+    $('.tabs').tabs();
     $("#time_limit").prop("disabled", true);
     $("#time_limit_toggle").change(function() {
         if ($(this).prop("checked") == false) {
