@@ -36,6 +36,7 @@ def register():
     return render_template("register.html")
 
 
+# Allow a user to add a finisher to the database
 @app.route("/add_finisher", methods=["GET", "POST"])
 def add_finisher():
     categories = mongo.db.categories.find()
@@ -48,6 +49,7 @@ def add_finisher():
                 form_input_nested[1].append(val)
             if key.startswith("set_type"):
                 form_input_nested[2].append(val)
+        # sort form_input_nested into an array of objects
         exercises = [{"exercise_name": a,
                       "set": b,
                       "set_type": c
@@ -69,6 +71,7 @@ def add_finisher():
         "add_finisher.html", categories=categories)
 
 
+# browse view so user can see all finishers posted by everyone
 @app.route("/browse_finishers")
 def browse_finishers():
     finishers = list(mongo.db.finishers.find())

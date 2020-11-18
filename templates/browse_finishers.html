@@ -32,7 +32,7 @@
                             </ol>
                         </div>
                         <div>
-                            <span>Time limit: {{ finisher.time_limit }}</span>
+                            <span>Time limit: {{ finisher.time_limit }} minutes</span>
                         </div>
                         <span>Instructions:</span>
                         <p>{{ finisher.instructions }}</p>
@@ -70,7 +70,7 @@
                                 </ol>
                             </div>
                             <div>
-                                <span>Time limit: {{ finisher.time_limit }}</span>
+                                <span>Time limit: {{ finisher.time_limit }} minutes</span>
                             </div>
                             <span>Instructions:</span>
                             <p>{{ finisher.instructions }}</p>
@@ -109,7 +109,7 @@
                                     </ol>
                                 </div>
                                 <div>
-                                    <span>Time limit: {{ finisher.time_limit }}</span>
+                                    <span>Time limit: {{ finisher.time_limit }} minutes</span>
                                 </div>
                                 <span>Instructions:</span>
                                 <p>{{ finisher.instructions }}</p>
@@ -139,16 +139,16 @@
                                                 <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i class="far fa-question-circle"> </i></a> {{ finisher.category_name }}: 
                                             {% endif %}
                                         {% endfor %}    
-                                        <ol>
+                                        <ul>
                                             {% for exercise in finisher.exercises %}
                                             <li>
                                                 {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
                                             </li>
                                             {% endfor %}
-                                        </ol>
+                                        </ul>
                                     </div>
                                     <div>
-                                        <span>Time limit: {{ finisher.time_limit }}</span>
+                                        <span>Time limit: {{ finisher.time_limit }} minutes</span>
                                     </div>
                                     <span>Instructions:</span>
                                     <p>{{ finisher.instructions }}</p>
