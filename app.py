@@ -2,6 +2,9 @@ import os
 from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField
+from wtforms.validators import DataRequired
 # from flask_login import login_user, logout_user, login_required
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -19,6 +22,16 @@ app.secret_key = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 
 
+class registration_form(FlaskForm):
+    username = StringField("username", validators=[DataRequired()])
+    password = PasswordField("password", validators=[DataRequired()])
+
+
+class login_form(FlaskForm):
+    username = StringField("username", validators=[DataRequired()])
+    password = PasswordField("password", validators=[DataRequired()])
+
+
 @app.route("/")
 def landing_page():
     return render_template("landing.html")
@@ -27,13 +40,43 @@ def landing_page():
 # Allow a user to register
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
-        register = {
-            "username": request.form.get("username").lower(),
-            "password": generate_password_hash(request.form.get("password"))
+    form = registration_form()
+    if form.validate_on_submit():
+
+        username_taken = mongo.db.users.find_one(
+            {"username": form.username.data.lower()})
+
+        if username_taken:
+            flash("Username already taken")
+            return redirect(url_for("register"))
+
+        new_user = {
+            "username": form.username.data.lower(),
+            "password": generate_password_hash(form.password.data)
         }
-        mongo.db.users.insert_one(register)
-    return render_template("register.html")
+        session["user"] = form.username.data.lower()
+        mongo.db.users.insert_one(new_user)
+        return redirect(url_for("browse_finishers"))
+
+    return render_template("register.html", form=form)
+
+
+# Allow a user to login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = login_form()
+    if form.validate_on_submit():
+
+        user_exists = mongo.db.users.find_one(
+            {"username": form.username.data.lower()})
+
+        if user_exists:
+            
+
+        session["user"] = form.username.data.lower()
+        return redirect(url_for("browse_finishers"))
+
+    return render_template("login.html", form=form)
 
 
 # Allow a user to add a finisher to the database
