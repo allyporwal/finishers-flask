@@ -5,7 +5,9 @@ from flask import (
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
-# from flask_login import login_user, logout_user, login_required
+from flask_login import (
+    UserMixin, LoginManager, current_user,
+    login_user, logout_user, login_required)
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -18,8 +20,25 @@ app = Flask(__name__)
 app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 mongo = PyMongo(app)
+
+
+class User(UserMixin):
+    def __init__(self, user_json):
+        self.user_json = user_json
+
+    def get_id(self):
+        object_id = self.user_json.get('_id')
+        return str(object_id)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    user_obj = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    return User(user_obj)
 
 
 class registration_form(FlaskForm):
@@ -54,7 +73,7 @@ def register():
             "username": form.username.data.lower(),
             "password": generate_password_hash(form.password.data)
         }
-        session["user"] = form.username.data.lower()
+        # session["user"] = form.username.data.lower()
         mongo.db.users.insert_one(new_user)
         return redirect(url_for("browse_finishers"))
 
@@ -62,19 +81,54 @@ def register():
 
 
 # Allow a user to login
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     form = login_form()
+
+#     if form.validate_on_submit():
+#         username_exists = mongo.db.users.find_one(
+#             {"username": form.username.data.lower()})
+
+#         if username_exists:
+
+#             if check_password_hash(
+#                     username_exists["password"],
+#                     form.password.data):
+#                 session["user"] = form.username.data.lower()
+#                 return redirect(url_for("browse_finishers"))
+
+#             else:
+#                 return redirect(url_for("login"))
+
+#         else:
+#             return redirect(url_for("login"))
+
+#     return render_template("login.html", form=form)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = login_form()
-    if form.validate_on_submit():
 
-        user_exists = mongo.db.users.find_one(
+    if form.validate_on_submit():
+        username_exists = mongo.db.users.find_one(
             {"username": form.username.data.lower()})
 
-        if user_exists:
-            
+        if username_exists:
 
-        session["user"] = form.username.data.lower()
-        return redirect(url_for("browse_finishers"))
+            if check_password_hash(
+                    username_exists["password"],
+                    form.password.data):
+                # session["user"] = form.username.data.lower()
+                loginUser = User(username_exists)
+                login_user(loginUser)
+                return redirect(url_for("browse_finishers"))
+
+            else:
+                return redirect(url_for("login"))
+
+        else:
+            return redirect(url_for("login"))
 
     return render_template("login.html", form=form)
 
@@ -106,7 +160,8 @@ def add_finisher():
             "time_limit_toggle": time_limit_toggle,
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
-            "reviews": []
+            "reviews": [],
+            "created_by": session["user"]
         }
         mongo.db.finishers.insert_one(finisher)
         return redirect(url_for("browse_finishers"))
@@ -116,11 +171,22 @@ def add_finisher():
 
 # browse view so user can see all finishers posted by everyone
 @app.route("/browse_finishers")
+@login_required
 def browse_finishers():
     finishers = list(mongo.db.finishers.find())
     categories = list(mongo.db.categories.find())
     return render_template(
         "browse_finishers.html", finishers=finishers, categories=categories)
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    # remove user from session cookies
+    flash("You have been logged out")
+    # session.pop("user")
+    logout_user()
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
