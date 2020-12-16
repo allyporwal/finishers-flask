@@ -52,8 +52,8 @@ class login_form(FlaskForm):
 
 
 @app.route("/")
-def landing_page():
-    return render_template("landing.html")
+def home_page():
+    return render_template("home.html")
 
 
 # Allow a user to register
@@ -73,7 +73,7 @@ def register():
             "username": form.username.data.lower(),
             "password": generate_password_hash(form.password.data)
         }
-        # session["user"] = form.username.data.lower()
+        session["user"] = form.username.data.lower()
         mongo.db.users.insert_one(new_user)
         return redirect(url_for("browse_finishers"))
 
@@ -81,31 +81,6 @@ def register():
 
 
 # Allow a user to login
-# @app.route("/login", methods=["GET", "POST"])
-# def login():
-#     form = login_form()
-
-#     if form.validate_on_submit():
-#         username_exists = mongo.db.users.find_one(
-#             {"username": form.username.data.lower()})
-
-#         if username_exists:
-
-#             if check_password_hash(
-#                     username_exists["password"],
-#                     form.password.data):
-#                 session["user"] = form.username.data.lower()
-#                 return redirect(url_for("browse_finishers"))
-
-#             else:
-#                 return redirect(url_for("login"))
-
-#         else:
-#             return redirect(url_for("login"))
-
-#     return render_template("login.html", form=form)
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = login_form()
@@ -119,22 +94,38 @@ def login():
             if check_password_hash(
                     username_exists["password"],
                     form.password.data):
-                # session["user"] = form.username.data.lower()
+                session["user"] = form.username.data.lower()
                 loginUser = User(username_exists)
                 login_user(loginUser)
-                return redirect(url_for("browse_finishers"))
+                return redirect(url_for("dashboard", username=session["user"]))
 
             else:
+                flash("Invalid username and/or password")
                 return redirect(url_for("login"))
 
         else:
+            flash("Invalid username and/or password")
             return redirect(url_for("login"))
 
     return render_template("login.html", form=form)
 
 
+# Display the user's dashboard
+@app.route("/dashboard/<username>", methods=["GET", "POST"])
+@login_required
+def dashboard(username):
+    username = mongo.db.users.find_one({
+        "username": session["user"]})["username"]
+
+    if session["user"]:
+        return render_template("dashboard.html", username=username)
+
+    return redirect(url_for("login"))
+
+
 # Allow a user to add a finisher to the database
 @app.route("/add_finisher", methods=["GET", "POST"])
+@login_required
 def add_finisher():
     categories = mongo.db.categories.find()
     if request.method == "POST":
@@ -184,9 +175,20 @@ def browse_finishers():
 def logout():
     # remove user from session cookies
     flash("You have been logged out")
-    # session.pop("user")
+    session.pop("user")
     logout_user()
     return redirect(url_for("login"))
+
+
+@app.errorhandler(401)
+def user_not_logged_in(e):
+    flash("Please log in to access that page")
+    return redirect(url_for("login"))
+
+
+@app.errorhandler(404)
+def error_404(e):
+    return render_template("error_404.html")
 
 
 if __name__ == "__main__":

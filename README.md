@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/54992412/flask-login-usermixin-class-with-a-mongodb
+https://stackoverflow.com/questions/53401996/attributeerror-dict-object-has-no-attribute-is-active-pymongo-and-flask
