@@ -3,6 +3,7 @@ from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 from flask_login import (
@@ -22,6 +23,8 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
 login_manager = LoginManager()
 login_manager.init_app(app)
+csrf = CSRFProtect(app)
+csrf.init_app(app)
 
 mongo = PyMongo(app)
 
@@ -178,6 +181,11 @@ def logout():
     session.pop("user")
     logout_user()
     return redirect(url_for("login"))
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf_error.html', reason=e.description), 400
 
 
 @app.errorhandler(401)
