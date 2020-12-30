@@ -163,6 +163,16 @@ def add_finisher():
         "add_finisher.html", categories=categories)
 
 
+# Allow a user to edit a finisher and add to their library
+@app.route("/edit_finisher/<finisher_id>", methods=["GET", "POST"])
+@login_required
+def edit_finisher(finisher_id):
+    finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
+    categories = mongo.db.categories.find()
+    return render_template(
+        "edit_finisher.html", finisher=finisher, categories=categories)
+
+
 # browse view so user can see all finishers posted by everyone
 @app.route("/browse_finishers")
 @login_required

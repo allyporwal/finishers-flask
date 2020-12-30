@@ -32,13 +32,15 @@
                             </ol>
                         </div>
                         <div>
-                            <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                            {% if finisher.time_limit_toggle == "on" %}
+                                <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                            {% endif %}
                         </div>
                         <span>Instructions:</span>
                         <p>{{ finisher.instructions }}</p>
                     </div>
                     <div class="card-action">
-                        <a href="#">Edit and add</a>
+                        <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
                         <a href="#">Review</a>
                     </div>
                 </div>
@@ -70,7 +72,9 @@
                                 </ol>
                             </div>
                             <div>
-                                <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                                {% if finisher.time_limit_toggle == "on" %}
+                                    <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                                {% endif %}
                             </div>
                             <span>Instructions:</span>
                             <p>{{ finisher.instructions }}</p>
@@ -109,7 +113,9 @@
                                     </ol>
                                 </div>
                                 <div>
-                                    <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                                    {% if finisher.time_limit_toggle == "on" %}
+                                        <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                                    {% endif %}
                                 </div>
                                 <span>Instructions:</span>
                                 <p>{{ finisher.instructions }}</p>
@@ -148,7 +154,9 @@
                                         </ul>
                                     </div>
                                     <div>
-                                        <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                                        {% if finisher.time_limit_toggle == "on" %}
+                                            <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                                        {% endif %}
                                     </div>
                                     <span>Instructions:</span>
                                     <p>{{ finisher.instructions }}</p>
