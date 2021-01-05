@@ -35,11 +35,15 @@
                             {% if finisher.time_limit_toggle == "on" %}
                                 <span>Time limit: {{ finisher.time_limit }} minutes</span>
                             {% endif %}
+                            {% if finisher.time_limit_toggle == "off" %}
+                                {{ finisher.time_limit }}
+                            {% endif %}    
                         </div>
                         <span>Instructions:</span>
                         <p>{{ finisher.instructions }}</p>
                     </div>
                     <div class="card-action">
+                        <a href="#">Add to library</a>
                         <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
                         <a href="#">Review</a>
                     </div>
@@ -80,6 +84,7 @@
                             <p>{{ finisher.instructions }}</p>
                         </div>
                         <div class="card-action">
+                            <a href="#">Add to library</a>
                             <a href="#">Edit and add</a>
                             <a href="#">Review</a>
                         </div>
@@ -121,6 +126,7 @@
                                 <p>{{ finisher.instructions }}</p>
                             </div>
                             <div class="card-action">
+                                <a href="#">Add to library</a>
                                 <a href="#">Edit and add</a>
                                 <a href="#">Review</a>
                             </div>
@@ -162,6 +168,7 @@
                                     <p>{{ finisher.instructions }}</p>
                                 </div>
                                 <div class="card-action">
+                                    <a href="#">Add to library</a>
                                     <a href="#">Edit and add</a>
                                     <a href="#">Review</a>
                                 </div>

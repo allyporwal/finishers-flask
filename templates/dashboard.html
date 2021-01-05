@@ -1,3 +1,43 @@
 {% extends "base.html" %} {% block content %}
 
+<div class="col s12">
+        <div class="row">
+            {% for finisher in finishers %}
+            <div class="col s12 m4">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">{{ finisher.finisher_name }}</span>
+                        <div>
+                            {% for category in categories %}
+                                {% if finisher.category_name == category.category_name %}
+                                    <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i class="far fa-question-circle"> </i></a> {{ finisher.category_name }}: 
+                                {% endif %}
+                            {% endfor %}    
+                            <ol>
+                                {% for exercise in finisher.exercises %}
+                                <li>
+                                    {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
+                                </li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                        <div>
+                            {% if finisher.time_limit_toggle == "on" %}
+                                <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                            {% endif %}   
+                        </div>
+                        <span>Instructions:</span>
+                        <p>{{ finisher.instructions }}</p>
+                    </div>
+                    <div class="card-action">
+                        <a href="#">Add to library</a>
+                        <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
+                        <a href="#">Review</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
 {% endblock %}

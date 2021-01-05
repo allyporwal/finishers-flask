@@ -6,6 +6,7 @@
 
 <div>
   <form method="POST" action="{{ url_for('add_finisher') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class="row">
       <div class="input-field col s6">
         <input name="finisher_name" type="text" class="validate" required />
@@ -28,15 +29,15 @@
 
     <div class="row">
       <div class="input-field col s6">
-        <input name="exercise" type="text" class="validate" required />
+        <input name="exercise" type="text" class="validate"  />
         <label for="exercise">Exercise 1:</label>
       </div>
       <div class="input-field col s3">
-        <input name="reps" type="number" class="validate" required />
-        <label for="reps">for:</label>
+        <input name="reps_1" type="number" class="validate"  />
+        <label for="reps_1">for:</label>
       </div>
       <div class="input-field col s3">
-        <select id="exercise_set_type_select" name="set_type" required>
+        <select id="exercise_set_type_select" name="set_type_1" >
           <option value="set_type" disabled selected>Choose your option</option>
           <option value="reps">reps</option>
           <option value="seconds">seconds</option>
@@ -50,15 +51,15 @@
 
     <div id="second_exercise" class="row hidden_exercise">
       <div class="input-field col s6">
-        <input name="exercise_2" type="text" class="validate" required />
+        <input name="exercise_2" type="text" class="validate"  />
         <label for="exercise_2">Exercise 2:</label>
       </div>
       <div class="input-field col s3">
-        <input name="reps_2" type="number" class="validate" required />
+        <input name="reps_2" type="number" class="validate"  />
         <label for="reps_2">for:</label>
       </div>
       <div class="input-field col s3">
-        <select id="exercise_set_type_select_2" name="set_type_2" required>
+        <select id="exercise_set_type_select_2" name="set_type_2" >
           <option value="" disabled selected>Choose your option</option>
           <option value="reps">reps</option>
           <option value="seconds">seconds</option>
@@ -72,15 +73,15 @@
 
     <div id="third_exercise" class="row hidden_exercise">
       <div class="input-field col s6">
-        <input name="exercise_3" type="text" class="validate" required />
+        <input name="exercise_3" type="text" class="validate"  />
         <label for="exercise_3">Exercise 3:</label>
       </div>
       <div class="input-field col s3">
-        <input name="reps_3" type="number" class="validate" required />
+        <input name="reps_3" type="number" class="validate"  />
         <label for="reps_3">for:</label>
       </div>
       <div class="input-field col s3">
-        <select id="exercise_set_type_select_3" name="set_type_3" required>
+        <select id="exercise_set_type_select_3" name="set_type_3" >
           <option value="" disabled selected>Choose your option</option>
           <option value="reps">reps</option>
           <option value="seconds">seconds</option>
@@ -121,7 +122,7 @@
       </div>
       <div class="input-field col s3">
         <input name="reps_5" type="number" class="validate" />
-        <label for="for_metres_reps_seconds_5">for:</label>
+        <label for="reps_5">for:</label>
       </div>
       <div class="input-field col s3">
         <select id="exercise_set_type_select_5" name="set_type_5">
@@ -165,7 +166,7 @@
       </div>
       <div class="input-field col s3">
         <input name="reps_7" type="number" class="validate" />
-        <label for="reps_6">for:</label>
+        <label for="reps_7">for:</label>
       </div>
       <div class="input-field col s3">
         <select id="exercise_set_type_select_7" name="set_type_7">
