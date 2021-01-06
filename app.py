@@ -3,9 +3,8 @@ from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
 from flask_wtf import FlaskForm
-from flask_wtf.csrf import CSRFProtect, CSRFError
 from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms.validators import InputRequired, Length, Regexp
 from flask_login import (
     UserMixin, LoginManager, current_user,
     login_user, logout_user, login_required)
@@ -23,8 +22,8 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
 login_manager = LoginManager()
 login_manager.init_app(app)
-csrf = CSRFProtect()
-csrf.init_app(app)
+# csrf = CSRFProtect()
+# csrf.init_app(app)
 
 mongo = PyMongo(app)
 
@@ -45,13 +44,19 @@ def load_user(user_id):
 
 
 class registration_form(FlaskForm):
-    username = StringField("username", validators=[DataRequired()])
-    password = PasswordField("password", validators=[DataRequired()])
+    username = StringField("username", validators=[InputRequired(), Length(
+        min=5, max=20, message="Must be between 5 and 20 characters long"),
+        Regexp("^[a-zA-Z0-9_]*$",
+               message="Please use letters and/or numbers only")])
+    password = PasswordField("password", validators=[InputRequired(), Length(
+        min=5, max=20, message="Must be between 5 and 20 characters long"),
+        Regexp("^[a-zA-Z0-9_]*$",
+               message="Please use letters and/or numbers only")])
 
 
 class login_form(FlaskForm):
-    username = StringField("username", validators=[DataRequired()])
-    password = PasswordField("password", validators=[DataRequired()])
+    username = StringField("username", validators=[InputRequired()])
+    password = PasswordField("password", validators=[InputRequired()])
 
 
 @app.route("/")
@@ -120,7 +125,7 @@ def dashboard(username):
     username = mongo.db.users.find_one({
         "username": session["user"]})["username"]
 
-    finishers = mongo.db.finishers.find({"created_by": session["user"]})
+    finishers = mongo.db.finishers.find({"created_by": username})
 
     if session["user"]:
         return render_template(
@@ -134,6 +139,7 @@ def dashboard(username):
 @login_required
 def add_finisher():
     categories = mongo.db.categories.find()
+    username = session["user"]
     if request.method == "POST":
         form_input_nested = [[], [], []]
         for key, val in request.form.items():
@@ -161,7 +167,7 @@ def add_finisher():
             "created_by": session["user"]
         }
         mongo.db.finishers.insert_one(finisher)
-        return redirect(url_for("browse_finishers"))
+        return redirect(url_for("dashboard", username=username))
     return render_template(
         "add_finisher.html", categories=categories)
 
@@ -172,6 +178,7 @@ def add_finisher():
 def edit_finisher(finisher_id):
     finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
+    username = session["user"]
     if request.method == "POST":
         form_input_nested = [[], [], []]
         for key, val in request.form.items():
@@ -200,7 +207,9 @@ def edit_finisher(finisher_id):
         }
         if edited_finisher["finisher_name"] == finisher["finisher_name"]:
             flash("Please give a new name to the finisher")
-        mongo.db.finishers.insert_one(edited_finisher)
+        else:
+            mongo.db.finishers.insert_one(edited_finisher)
+            return redirect(url_for("dashboard", username=username))
     return render_template(
         "edit_finisher.html", finisher=finisher, categories=categories)
 
@@ -223,11 +232,6 @@ def logout():
     session.pop("user")
     logout_user()
     return redirect(url_for("login"))
-
-
-@app.errorhandler(CSRFError)
-def handle_csrf_error(e):
-    return render_template('csrf_error.html', reason=e.description), 400
 
 
 @app.errorhandler(401)
