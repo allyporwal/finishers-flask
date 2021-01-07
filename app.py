@@ -4,7 +4,7 @@ from flask import (
     redirect, request, session, url_for)
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms.validators import InputRequired, Length, Regexp
+from wtforms.validators import InputRequired, Length, Regexp, EqualTo
 from flask_login import (
     UserMixin, LoginManager, current_user,
     login_user, logout_user, login_required)
@@ -52,11 +52,19 @@ class registration_form(FlaskForm):
         min=5, max=20, message="Must be between 5 and 20 characters long"),
         Regexp("^[a-zA-Z0-9_]*$",
                message="Please use letters and/or numbers only")])
+    confirm = PasswordField("Repeat Password", validators=[EqualTo(
+        "password", message='Passwords must match')])
 
 
 class login_form(FlaskForm):
-    username = StringField("username", validators=[InputRequired()])
-    password = PasswordField("password", validators=[InputRequired()])
+    username = StringField("username", validators=[InputRequired(), Length(
+        min=5, max=20, message="Must be between 5 and 20 characters long"),
+        Regexp("^[a-zA-Z0-9_]*$",
+               message="Please use letters and/or numbers only")])
+    password = PasswordField("password", validators=[InputRequired(), Length(
+        min=5, max=20, message="Must be between 5 and 20 characters long"),
+        Regexp("^[a-zA-Z0-9_]*$",
+               message="Please use letters and/or numbers only")])
 
 
 @app.route("/")
