@@ -22,8 +22,7 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
 login_manager = LoginManager()
 login_manager.init_app(app)
-# csrf = CSRFProtect()
-# csrf.init_app(app)
+
 
 mongo = PyMongo(app)
 
@@ -87,11 +86,18 @@ def register():
 
         new_user = {
             "username": form.username.data.lower(),
-            "password": generate_password_hash(form.password.data)
+            "password": generate_password_hash(form.password.data),
+            "library": []
         }
-        session["user"] = form.username.data.lower()
+
         mongo.db.users.insert_one(new_user)
-        return redirect(url_for("browse_finishers"))
+        session["user"] = form.username.data.lower()
+        username_exists = mongo.db.users.find_one(
+            {"username": form.username.data.lower()})
+        loginUser = User(username_exists)
+        login_user(loginUser)
+
+        return redirect(url_for("dashboard", username=session["user"]))
 
     return render_template("register.html", form=form)
 
@@ -134,10 +140,14 @@ def dashboard(username):
         "username": session["user"]})["username"]
 
     finishers = mongo.db.finishers.find({"created_by": username})
+    library = mongo.db.users.find_one({
+        "username": session["user"]})["library"]
+    added_finishers = mongo.db.finishers.find({"_id": {"$in": library}})
 
     if session["user"]:
         return render_template(
-            "dashboard.html", username=username, finishers=finishers)
+            "dashboard.html", username=username,
+            finishers=finishers, added_finishers=added_finishers)
 
     return redirect(url_for("login"))
 
@@ -180,7 +190,8 @@ def add_finisher():
         "add_finisher.html", categories=categories)
 
 
-# Allow a user to edit a finisher and add to their library
+# Allow a user to edit a finisher and then add to their library
+# This creates a new finisher that is a modified version of an existing one
 @app.route("/edit_finisher/<finisher_id>", methods=["GET", "POST"])
 @login_required
 def edit_finisher(finisher_id):
@@ -214,12 +225,68 @@ def edit_finisher(finisher_id):
             "created_by": session["user"]
         }
         if edited_finisher["finisher_name"] == finisher["finisher_name"]:
-            flash("Please give a new name to the finisher")
+            flash("Please give a new name to the edited finisher")
         else:
             mongo.db.finishers.insert_one(edited_finisher)
             return redirect(url_for("dashboard", username=username))
     return render_template(
         "edit_finisher.html", finisher=finisher, categories=categories)
+
+
+# Allow a user to edit a finisher they created
+# This doesn't create a new finisher in the collection
+@app.route("/modify_finisher/<finisher_id>", methods=["GET", "POST"])
+@login_required
+def modify_finisher(finisher_id):
+    finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
+    categories = mongo.db.categories.find()
+    username = session["user"]
+    if request.method == "POST":
+        form_input_nested = [[], [], []]
+        for key, val in request.form.items():
+            if key.startswith("exercise"):
+                form_input_nested[0].append(val)
+            if key.startswith("reps"):
+                form_input_nested[1].append(val)
+            if key.startswith("set_type"):
+                form_input_nested[2].append(val)
+        # sort form_input_nested into an array of objects
+        exercises = [{"exercise_name": a,
+                      "set": b,
+                      "set_type": c
+                      } for (a, b, c) in zip(*form_input_nested)]
+        time_limit_toggle = "on" if request.form.get(
+            "time_limit_toggle") else "off"
+        modified_finisher = {
+            "finisher_name": request.form.get("finisher_name"),
+            "category_name": request.form.get("categories"),
+            "exercises": exercises,
+            "time_limit_toggle": time_limit_toggle,
+            "time_limit": request.form.get("time_limit"),
+            "instructions": request.form.get("instructions"),
+            "reviews": [],
+            "created_by": session["user"]
+        }
+        mongo.db.finishers.update(
+            {"_id": ObjectId(finisher_id)}, modified_finisher)
+        return redirect(url_for("dashboard", username=username))
+    return render_template(
+        "modify_finisher.html", finisher=finisher, categories=categories)
+
+
+# User can add a finisher to their library without editing
+@app.route("/add_to_library/<finisher_id>", methods=["GET", "POST"])
+def add_to_library(finisher_id):
+    finisher = mongo.db.finishers.find_one(
+        {"_id": ObjectId(finisher_id)})["_id"]
+    username = session["user"]
+
+    mongo.db.users.update(
+        {"username": username}, {"$push": {"library": finisher}})
+
+    flash("Finisher added to library")
+    return redirect(url_for(
+        "dashboard", username=username))
 
 
 # browse view so user can see all finishers posted by everyone

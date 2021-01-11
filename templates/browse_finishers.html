@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
+
 <div class="row">
     <div class="col s12">
       <ul class="tabs">
@@ -53,6 +54,7 @@
         </div>
     </div>
     
+
     <div id="AMRAP" class="col s12">
         <div class="row">
             {% for finisher in finishers %}
@@ -84,7 +86,7 @@
                             <p>{{ finisher.instructions }}</p>
                         </div>
                         <div class="card-action">
-                            <a href="#">Add to library</a>
+                            <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
                             <a href="#">Edit and add</a>
                             <a href="#">Review</a>
                         </div>
