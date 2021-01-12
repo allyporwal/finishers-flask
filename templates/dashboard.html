@@ -37,9 +37,9 @@
                         <p>{{ finisher.instructions }}</p>
                     </div>
                     <div class="card-action">
-                        <a href="#">Add to library</a>
-                        <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
+                        <a href="{{ url_for('edit_finisher', finisher_id=finisher._id) }}">Edit and add</a>
                         <a href="#">Review</a>
+                        <a href="#">Delete</a>
                     </div>
                 </div>
             </div>
@@ -79,10 +79,13 @@
                     <div class="card-action">
                         <a href="#">Add to library</a>
                         <a href="#">Review</a>
+                        <a href="{{ url_for('remove_from_library', finisher_id=added_finisher._id) }}">Remove</a>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+
+{{ library }}
 {% endblock %}

@@ -3,6 +3,7 @@ from flask import (
     Flask, flash, render_template,
     redirect, request, session, url_for)
 from flask_wtf import FlaskForm
+from flask_wtf.csrf import CsrfProtect
 from wtforms import StringField, PasswordField
 from wtforms.validators import InputRequired, Length, Regexp, EqualTo
 from flask_login import (
@@ -22,7 +23,7 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 app.secret_key = os.environ.get("SECRET_KEY")
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+CsrfProtect(app)
 
 mongo = PyMongo(app)
 
@@ -147,7 +148,7 @@ def dashboard(username):
     if session["user"]:
         return render_template(
             "dashboard.html", username=username,
-            finishers=finishers, added_finishers=added_finishers)
+            finishers=finishers, added_finishers=added_finishers, library=library)
 
     return redirect(url_for("login"))
 
@@ -158,6 +159,7 @@ def dashboard(username):
 def add_finisher():
     categories = mongo.db.categories.find()
     username = session["user"]
+
     if request.method == "POST":
         form_input_nested = [[], [], []]
         for key, val in request.form.items():
@@ -167,6 +169,7 @@ def add_finisher():
                 form_input_nested[1].append(val)
             if key.startswith("set_type"):
                 form_input_nested[2].append(val)
+
         # sort form_input_nested into an array of objects
         exercises = [{"exercise_name": a,
                       "set": b,
@@ -184,8 +187,10 @@ def add_finisher():
             "reviews": [],
             "created_by": session["user"]
         }
+
         mongo.db.finishers.insert_one(finisher)
         return redirect(url_for("dashboard", username=username))
+
     return render_template(
         "add_finisher.html", categories=categories)
 
@@ -198,6 +203,7 @@ def edit_finisher(finisher_id):
     finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
     username = session["user"]
+
     if request.method == "POST":
         form_input_nested = [[], [], []]
         for key, val in request.form.items():
@@ -207,6 +213,7 @@ def edit_finisher(finisher_id):
                 form_input_nested[1].append(val)
             if key.startswith("set_type"):
                 form_input_nested[2].append(val)
+
         # sort form_input_nested into an array of objects
         exercises = [{"exercise_name": a,
                       "set": b,
@@ -224,11 +231,13 @@ def edit_finisher(finisher_id):
             "reviews": [],
             "created_by": session["user"]
         }
+
         if edited_finisher["finisher_name"] == finisher["finisher_name"]:
             flash("Please give a new name to the edited finisher")
         else:
             mongo.db.finishers.insert_one(edited_finisher)
             return redirect(url_for("dashboard", username=username))
+
     return render_template(
         "edit_finisher.html", finisher=finisher, categories=categories)
 
@@ -275,7 +284,7 @@ def modify_finisher(finisher_id):
 
 
 # User can add a finisher to their library without editing
-@app.route("/add_to_library/<finisher_id>", methods=["GET", "POST"])
+@app.route("/add_to_library/<finisher_id>")
 def add_to_library(finisher_id):
     finisher = mongo.db.finishers.find_one(
         {"_id": ObjectId(finisher_id)})["_id"]
@@ -285,8 +294,20 @@ def add_to_library(finisher_id):
         {"username": username}, {"$push": {"library": finisher}})
 
     flash("Finisher added to library")
-    return redirect(url_for(
-        "dashboard", username=username))
+    return redirect(url_for("dashboard", username=username))
+
+
+@app.route("/remove_from_library/<finisher_id>")
+def remove_from_library(finisher_id):
+    finisher = mongo.db.finishers.find_one(
+        {"_id": ObjectId(finisher_id)})["_id"]
+    username = session["user"]
+
+    mongo.db.users.update(
+        {"username": username}, {"$pull": {"library": finisher}})
+
+    flash("Finisher removed from library")
+    return redirect(url_for("dashboard", username=username))
 
 
 # browse view so user can see all finishers posted by everyone
