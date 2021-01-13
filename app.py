@@ -148,7 +148,7 @@ def dashboard(username):
     if session["user"]:
         return render_template(
             "dashboard.html", username=username,
-            finishers=finishers, added_finishers=added_finishers, library=library)
+            finishers=finishers, added_finishers=added_finishers)
 
     return redirect(url_for("login"))
 
@@ -297,6 +297,7 @@ def add_to_library(finisher_id):
     return redirect(url_for("dashboard", username=username))
 
 
+# User can remove a finisher from their library without deleting it from DB
 @app.route("/remove_from_library/<finisher_id>")
 def remove_from_library(finisher_id):
     finisher = mongo.db.finishers.find_one(
@@ -308,6 +309,32 @@ def remove_from_library(finisher_id):
 
     flash("Finisher removed from library")
     return redirect(url_for("dashboard", username=username))
+
+
+# Allows a user to completely delete a finisher they authored
+@app.route("/delete_finisher/<finisher_id>")
+@login_required
+def delete_finisher(finisher_id):
+    username = session["user"]
+    finisher_creator = mongo.db.finishers.find_one(
+        {"_id": ObjectId(finisher_id)})["created_by"]
+    if username == finisher_creator:
+        mongo.db.finishers.remove({"_id": ObjectId(finisher_id)})
+        flash("Finisher deleted")
+        return redirect(url_for("dashboard", username=username))
+    else:
+        flash("You can only delete finishers you have created")
+        return redirect(url_for("dashboard", username=username))
+
+
+@app.route("/finisher/<finisher_id>")
+@login_required
+def display_finisher(finisher_id):
+    finisher = mongo.db.finishers.find_one(
+        {"_id": ObjectId(finisher_id)})
+    categories = list(mongo.db.categories.find())
+    return render_template("finisher.html", finisher=finisher,
+                           categories=categories)
 
 
 # browse view so user can see all finishers posted by everyone
