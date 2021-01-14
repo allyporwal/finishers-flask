@@ -1,7 +1,7 @@
 import os
 from flask import (
     Flask, flash, render_template,
-    redirect, request, session, url_for)
+    redirect, request, url_for)
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CsrfProtect
 from wtforms import StringField, PasswordField
@@ -31,9 +31,11 @@ mongo = PyMongo(app)
 class User(UserMixin):
     def __init__(self, user_json):
         self.user_json = user_json
+        self.username = self.user_json.get("username")
+        self.library = self.user_json.get("library")
 
     def get_id(self):
-        object_id = self.user_json.get('_id')
+        object_id = self.user_json.get("_id")
         return str(object_id)
 
 
@@ -92,13 +94,12 @@ def register():
         }
 
         mongo.db.users.insert_one(new_user)
-        session["user"] = form.username.data.lower()
         username_exists = mongo.db.users.find_one(
             {"username": form.username.data.lower()})
         loginUser = User(username_exists)
         login_user(loginUser)
 
-        return redirect(url_for("dashboard", username=session["user"]))
+        return redirect(url_for("dashboard", username=new_user["username"]))
 
     return render_template("register.html", form=form)
 
@@ -117,10 +118,10 @@ def login():
             if check_password_hash(
                     username_exists["password"],
                     form.password.data):
-                session["user"] = form.username.data.lower()
                 loginUser = User(username_exists)
                 login_user(loginUser)
-                return redirect(url_for("dashboard", username=session["user"]))
+                return redirect(url_for(
+                    "dashboard", username=username_exists["username"]))
 
             else:
                 flash("Invalid username and/or password")
@@ -137,17 +138,13 @@ def login():
 @app.route("/dashboard/<username>", methods=["GET", "POST"])
 @login_required
 def dashboard(username):
-    username = mongo.db.users.find_one({
-        "username": session["user"]})["username"]
+    finishers = mongo.db.finishers.find({"created_by": current_user.username})
+    added_finishers = mongo.db.finishers.find(
+        {"_id": {"$in": current_user.library}})
 
-    finishers = mongo.db.finishers.find({"created_by": username})
-    library = mongo.db.users.find_one({
-        "username": session["user"]})["library"]
-    added_finishers = mongo.db.finishers.find({"_id": {"$in": library}})
-
-    if session["user"]:
+    if current_user.is_authenticated:
         return render_template(
-            "dashboard.html", username=username,
+            "dashboard.html", username=current_user.username,
             finishers=finishers, added_finishers=added_finishers)
 
     return redirect(url_for("login"))
@@ -158,7 +155,6 @@ def dashboard(username):
 @login_required
 def add_finisher():
     categories = mongo.db.categories.find()
-    username = session["user"]
 
     if request.method == "POST":
         form_input_nested = [[], [], []]
@@ -185,11 +181,11 @@ def add_finisher():
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
             "reviews": [],
-            "created_by": session["user"]
+            "created_by": current_user.username
         }
 
         mongo.db.finishers.insert_one(finisher)
-        return redirect(url_for("dashboard", username=username))
+        return redirect(url_for("dashboard", username=current_user.username))
 
     return render_template(
         "add_finisher.html", categories=categories)
@@ -202,7 +198,6 @@ def add_finisher():
 def edit_finisher(finisher_id):
     finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
-    username = session["user"]
 
     if request.method == "POST":
         form_input_nested = [[], [], []]
@@ -229,14 +224,15 @@ def edit_finisher(finisher_id):
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
             "reviews": [],
-            "created_by": session["user"]
+            "created_by": current_user.username
         }
 
         if edited_finisher["finisher_name"] == finisher["finisher_name"]:
             flash("Please give a new name to the edited finisher")
         else:
             mongo.db.finishers.insert_one(edited_finisher)
-            return redirect(url_for("dashboard", username=username))
+            return redirect(url_for(
+                "dashboard", username=current_user.username))
 
     return render_template(
         "edit_finisher.html", finisher=finisher, categories=categories)
@@ -249,7 +245,7 @@ def edit_finisher(finisher_id):
 def modify_finisher(finisher_id):
     finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
-    username = session["user"]
+
     if request.method == "POST":
         form_input_nested = [[], [], []]
         for key, val in request.form.items():
@@ -274,11 +270,11 @@ def modify_finisher(finisher_id):
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
             "reviews": [],
-            "created_by": session["user"]
+            "created_by": current_user.username
         }
         mongo.db.finishers.update(
             {"_id": ObjectId(finisher_id)}, modified_finisher)
-        return redirect(url_for("dashboard", username=username))
+        return redirect(url_for("dashboard", username=current_user.username))
     return render_template(
         "modify_finisher.html", finisher=finisher, categories=categories)
 
@@ -288,13 +284,11 @@ def modify_finisher(finisher_id):
 def add_to_library(finisher_id):
     finisher = mongo.db.finishers.find_one(
         {"_id": ObjectId(finisher_id)})["_id"]
-    username = session["user"]
-
     mongo.db.users.update(
-        {"username": username}, {"$push": {"library": finisher}})
+        {"username": current_user.username}, {"$push": {"library": finisher}})
 
     flash("Finisher added to library")
-    return redirect(url_for("dashboard", username=username))
+    return redirect(url_for("dashboard", username=current_user.username))
 
 
 # User can remove a finisher from their library without deleting it from DB
@@ -302,29 +296,29 @@ def add_to_library(finisher_id):
 def remove_from_library(finisher_id):
     finisher = mongo.db.finishers.find_one(
         {"_id": ObjectId(finisher_id)})["_id"]
-    username = session["user"]
 
     mongo.db.users.update(
-        {"username": username}, {"$pull": {"library": finisher}})
+        {"username": current_user.username}, {"$pull": {"library": finisher}})
 
     flash("Finisher removed from library")
-    return redirect(url_for("dashboard", username=username))
+    return redirect(url_for("dashboard", username=current_user.username))
 
 
 # Allows a user to completely delete a finisher they authored
 @app.route("/delete_finisher/<finisher_id>")
 @login_required
 def delete_finisher(finisher_id):
-    username = session["user"]
     finisher_creator = mongo.db.finishers.find_one(
         {"_id": ObjectId(finisher_id)})["created_by"]
-    if username == finisher_creator:
+
+    if current_user.username == finisher_creator:
         mongo.db.finishers.remove({"_id": ObjectId(finisher_id)})
         flash("Finisher deleted")
-        return redirect(url_for("dashboard", username=username))
+        return redirect(url_for("dashboard", username=current_user.username))
+
     else:
         flash("You can only delete finishers you have created")
-        return redirect(url_for("dashboard", username=username))
+        return redirect(url_for("dashboard", username=current_user.username))
 
 
 @app.route("/finisher/<finisher_id>")
@@ -343,6 +337,7 @@ def display_finisher(finisher_id):
 def browse_finishers():
     finishers = list(mongo.db.finishers.find())
     categories = list(mongo.db.categories.find())
+
     return render_template(
         "browse_finishers.html", finishers=finishers, categories=categories)
 
@@ -352,7 +347,6 @@ def browse_finishers():
 def logout():
     # remove user from session cookies
     flash("You have been logged out")
-    session.pop("user")
     logout_user()
     return redirect(url_for("login"))
 

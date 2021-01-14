@@ -24,8 +24,8 @@
 				<a href="#!" class="brand-logo">Finishers</a>
 				<a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="fas fa-bars"></i></a>
 				<ul class="right hide-on-med-and-down">
-                {% if session.user %}    
-                    <li><a href="{{ url_for('dashboard', username=session['user']) }}">Dashboard</a></li>
+                {% if current_user.is_authenticated %}    
+                    <li><a href="{{ url_for('dashboard', username=current_user.username) }}">Dashboard</a></li>
 					<li><a href="{{ url_for('browse_finishers') }}">Browse</a></li>
                     <li><a href="{{ url_for('add_finisher') }}">Create</a></li>
                     <li><a href="{{ url_for('logout') }}">Log Out</a></li>
