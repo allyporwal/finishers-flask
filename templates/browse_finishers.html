@@ -46,7 +46,7 @@
                     <div class="card-action">
                         <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
                         <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
-                        <a href="#">Review</a>
+                        <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
                     </div>
                 </div>
             </div>
@@ -87,8 +87,8 @@
                         </div>
                         <div class="card-action">
                             <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
-                            <a href="#">Edit and add</a>
-                            <a href="#">Review</a>
+                            <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
+                            <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
                         </div>
                     </div>
                 </div>
@@ -129,8 +129,8 @@
                             </div>
                             <div class="card-action">
                                 <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
-                                <a href="#">Edit and add</a>
-                                <a href="#">Review</a>
+                                <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
+                                <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
                             </div>
                         </div>
                     </div>
@@ -171,8 +171,8 @@
                                 </div>
                                 <div class="card-action">
                                     <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
-                                    <a href="#">Edit and add</a>
-                                    <a href="#">Review</a>
+                                    <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
+                                    <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
                                 </div>
                             </div>
                         </div>

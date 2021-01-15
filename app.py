@@ -4,7 +4,7 @@ from flask import (
     redirect, request, url_for)
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CsrfProtect
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, TextAreaField
 from wtforms.validators import InputRequired, Length, Regexp, EqualTo
 from flask_login import (
     UserMixin, LoginManager, current_user,
@@ -67,6 +67,10 @@ class login_form(FlaskForm):
         min=5, max=20, message="Must be between 5 and 20 characters long"),
         Regexp("^[a-zA-Z0-9_]*$",
                message="Please use letters and/or numbers only")])
+
+
+class review_form(FlaskForm):
+    review = TextAreaField("review", validators=[InputRequired()])
 
 
 @app.route("/")
@@ -321,14 +325,27 @@ def delete_finisher(finisher_id):
         return redirect(url_for("dashboard", username=current_user.username))
 
 
-@app.route("/finisher/<finisher_id>")
+# Shows an individual finisher and allows a user to review it
+@app.route("/finisher/<finisher_id>", methods=["GET", "POST"])
 @login_required
 def display_finisher(finisher_id):
+    form = review_form()
     finisher = mongo.db.finishers.find_one(
         {"_id": ObjectId(finisher_id)})
     categories = list(mongo.db.categories.find())
+    reviews = list(finisher["reviews"])
+
+    if form.validate_on_submit():
+        review = {
+            "review": form.review.data,
+            "reviewed_by": current_user.username
+        }
+        mongo.db.finishers.update(
+            {"_id": ObjectId(finisher_id)}, {"$push": {"reviews": review}})
+        return redirect(url_for("display_finisher", finisher_id=finisher_id))
+
     return render_template("finisher.html", finisher=finisher,
-                           categories=categories)
+                           categories=categories, form=form, reviews=reviews)
 
 
 # browse view so user can see all finishers posted by everyone

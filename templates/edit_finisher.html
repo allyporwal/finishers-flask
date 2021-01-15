@@ -32,7 +32,7 @@
     {% for exercises in finisher.exercises %}
     <div class="row">
       <div class="input-field col s6">
-        <input name="exercise" type="text" class="validate" value="{{ exercises.exercise_name }}" required />
+        <input name="exercise_{{ loop.index }}" type="text" class="validate" value="{{ exercises.exercise_name }}" required />
         <label for="exercise">Exercise {{ loop.index }}:</label>
       </div>
       <div class="input-field col s3">
