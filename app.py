@@ -1,7 +1,7 @@
 import os
 from flask import (
-    Flask, flash, render_template,
-    redirect, request, url_for)
+    Flask, flash, render_template, json,
+    redirect, request, url_for, jsonify)
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CsrfProtect
 from wtforms import StringField, PasswordField, TextAreaField
@@ -145,11 +145,13 @@ def dashboard(username):
     finishers = mongo.db.finishers.find({"created_by": current_user.username})
     added_finishers = mongo.db.finishers.find(
         {"_id": {"$in": current_user.library}})
+    exercises = list(mongo.db.exercises.find({}, {'_id': False}))
 
     if current_user.is_authenticated:
         return render_template(
             "dashboard.html", username=current_user.username,
-            finishers=finishers, added_finishers=added_finishers)
+            exercises=exercises, finishers=finishers,
+            added_finishers=added_finishers)
 
     return redirect(url_for("login"))
 
@@ -357,6 +359,38 @@ def browse_finishers():
 
     return render_template(
         "browse_finishers.html", finishers=finishers, categories=categories)
+
+
+@app.route('/hello', methods=['GET', 'POST'])
+def hello():
+
+    # if request.method == 'GET':
+    #     return list(mongo.db.exercises.find({}, {'_id': False}))
+
+    if request.method == 'POST':
+        print('Incoming..')
+        print(request.get_json())  # parse as JSON
+        return 'OK', 200
+
+    # GET request
+    else:
+        message = list(mongo.db.exercises.find({}, {'_id': False}))
+        return jsonify(message)
+
+
+# @app.route('/hello', methods=['GET', 'POST'])
+# def hello():
+
+#     # POST request
+#     if request.method == 'POST':
+#         print('Incoming..')
+#         print(request.get_json())  # parse as JSON
+#         return 'OK', 200
+
+#     # GET request
+#     else:
+#         message = {'greeting': 'Hello from Flask!'}
+#         return jsonify(message)  # serialize and use JSON headers
 
 
 @app.route("/logout")

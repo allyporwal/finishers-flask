@@ -1,16 +1,23 @@
+let exercises;
+
+fetch('/hello')
+  .then(response => response.json())
+  .then(data => exercises = data)
+  .then(function () {
+        let exerciseObject = Object.assign({}, ...exercises);
+        $(document).ready(function () {
+            $('input.autocomplete').autocomplete({
+            data: exerciseObject,
+            });
+        });
+    })
+
+
 $(document).ready(function () {
     $('.sidenav').sidenav();
     $("select").formSelect();
     $('.tooltipped').tooltip();
     $('.tabs').tabs();
-    // $("#time_limit").prop("disabled", true);
-    // $("#time_limit_toggle").change(function() {
-    //     if ($(this).prop("checked") == false) {
-    //             $("#time_limit").prop("disabled", true);
-    //     } else if ($(this).prop("checked") == true) {
-    //             $("#time_limit").prop("disabled", false);
-    //     } 
-    // })
 });
 
 $("#exercise_set_type_select").change(function() {
