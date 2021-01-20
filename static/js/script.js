@@ -1,6 +1,6 @@
 let exercises;
 
-fetch('/hello')
+fetch('/autofill')
   .then(response => response.json())
   .then(data => exercises = data)
   .then(function () {

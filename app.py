@@ -1,10 +1,11 @@
 import os
 from flask import (
-    Flask, flash, render_template, json,
+    Flask, flash, render_template,
     redirect, request, url_for, jsonify)
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CsrfProtect
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import (
+    StringField, PasswordField, TextAreaField, RadioField)
 from wtforms.validators import InputRequired, Length, Regexp, EqualTo
 from flask_login import (
     UserMixin, LoginManager, current_user,
@@ -70,7 +71,15 @@ class login_form(FlaskForm):
 
 
 class review_form(FlaskForm):
+    vote = RadioField("vote", choices=[(100, "upvote"), (0, "downvote")])
     review = TextAreaField("review", validators=[InputRequired()])
+
+
+class add_exercise(FlaskForm):
+    exercise_name = StringField(
+        "exercise_name", validators=[InputRequired(), Length(
+            min=5, max=50,
+            message="Must be between 5 and 50 characters long")])
 
 
 @app.route("/")
@@ -145,13 +154,11 @@ def dashboard(username):
     finishers = mongo.db.finishers.find({"created_by": current_user.username})
     added_finishers = mongo.db.finishers.find(
         {"_id": {"$in": current_user.library}})
-    exercises = list(mongo.db.exercises.find({}, {'_id': False}))
 
     if current_user.is_authenticated:
         return render_template(
             "dashboard.html", username=current_user.username,
-            exercises=exercises, finishers=finishers,
-            added_finishers=added_finishers)
+            finishers=finishers, added_finishers=added_finishers)
 
     return redirect(url_for("login"))
 
@@ -336,17 +343,23 @@ def display_finisher(finisher_id):
         {"_id": ObjectId(finisher_id)})
     categories = list(mongo.db.categories.find())
     reviews = list(finisher["reviews"])
+    ratings = [int(i) for i in finisher["votes"]]
+    rating = sum(ratings)/len(ratings)
 
     if form.validate_on_submit():
+
         review = {
             "review": form.review.data,
             "reviewed_by": current_user.username
         }
         mongo.db.finishers.update(
             {"_id": ObjectId(finisher_id)}, {"$push": {"reviews": review}})
+        mongo.db.finishers.update(
+            {"_id": ObjectId(finisher_id)},
+            {"$push": {"votes": form.vote.data}})
         return redirect(url_for("display_finisher", finisher_id=finisher_id))
 
-    return render_template("finisher.html", finisher=finisher,
+    return render_template("finisher.html", finisher=finisher, rating=rating,
                            categories=categories, form=form, reviews=reviews)
 
 
@@ -361,42 +374,34 @@ def browse_finishers():
         "browse_finishers.html", finishers=finishers, categories=categories)
 
 
-@app.route('/hello', methods=['GET', 'POST'])
-def hello():
+# page for admin user to add new exercises to collection
+@app.route("/add_exercises", methods=["GET", "POST"])
+@login_required
+def add_exercises():
+    form = add_exercise()
 
-    # if request.method == 'GET':
-    #     return list(mongo.db.exercises.find({}, {'_id': False}))
+    if form.validate_on_submit():
+        exercise = {
+            form.exercise_name.data: None
+        }
+        flash("Exercise added to database")
+        mongo.db.exercises.insert_one(exercise)
+        return redirect(url_for("add_exercises"))
 
-    if request.method == 'POST':
-        print('Incoming..')
-        print(request.get_json())  # parse as JSON
-        return 'OK', 200
+    return render_template("add_exercises.html", form=form)
 
-    # GET request
-    else:
+
+@app.route("/autofill", methods=["GET", "POST"])
+def autofill():
+
+    if request.method == 'GET':
         message = list(mongo.db.exercises.find({}, {'_id': False}))
         return jsonify(message)
-
-
-# @app.route('/hello', methods=['GET', 'POST'])
-# def hello():
-
-#     # POST request
-#     if request.method == 'POST':
-#         print('Incoming..')
-#         print(request.get_json())  # parse as JSON
-#         return 'OK', 200
-
-#     # GET request
-#     else:
-#         message = {'greeting': 'Hello from Flask!'}
-#         return jsonify(message)  # serialize and use JSON headers
 
 
 @app.route("/logout")
 @login_required
 def logout():
-    # remove user from session cookies
     flash("You have been logged out")
     logout_user()
     return redirect(url_for("login"))

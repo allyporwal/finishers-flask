@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section>
+  <form class="col s12" method="POST" action="{{ url_for('add_exercises') }}">
+    {{ form.csrf_token }} 
+    {{ form.exercise_name.label }} {{ form.exercise_name(size=20) }}
+    <button type="submit" class="col s12 btn-large">
+      Add exercise
+      <i class="fas fa-sign-in-alt"></i>
+    </button>
+  </form>
+</section>
+
+
+{% endblock %} 

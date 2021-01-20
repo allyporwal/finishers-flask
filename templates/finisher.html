@@ -1,50 +1,74 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% block content %}
 
 
-        <div class="row">
-            <div class="col s12 m4">
-                <div class="card blue-grey darken-1">
-                    <div class="card-content white-text">
-                        <span class="card-title">{{ finisher.finisher_name }}</span>
-                        <div>
-                            {% for category in categories %}
-                                {% if finisher.category_name == category.category_name %}
-                                    <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i class="far fa-question-circle"> </i></a> {{ finisher.category_name }}: 
-                                {% endif %}
-                            {% endfor %}   
-                            <ol>
-                                {% for exercise in finisher.exercises %}
-                                <li>
-                                    {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
-                                </li>
-                                {% endfor %}
-                            </ol>
-                        </div>
-                        <div>
-                            {% if finisher.time_limit_toggle == "on" %}
-                                <span>Time limit: {{ finisher.time_limit }} minutes</span>
-                            {% endif %}   
-                        </div>
-                        <span>Instructions:</span>
-                        <p>{{ finisher.instructions }}</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
-                        <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
-                    </div>
+<div class="row">
+    <div class="col s12 m4">
+        <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+                <span class="card-title">{{ finisher.finisher_name }}</span>
+                <div>
+                    {% for category in categories %}
+                    {% if finisher.category_name == category.category_name %}
+                    <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i
+                            class="far fa-question-circle"> </i></a> {{ finisher.category_name }}:
+                    {% endif %}
+                    {% endfor %}
+                    <ol>
+                        {% for exercise in finisher.exercises %}
+                        <li>
+                            {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
+                        </li>
+                        {% endfor %}
+                    </ol>
                 </div>
+                <div>
+                    {% if finisher.time_limit_toggle == "on" %}
+                    <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                    {% endif %}
+                </div>
+                <span>Instructions:</span>
+                <p>{{ finisher.instructions }}</p>
+            </div>
+            <div class="card-action">
+                <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
+                <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
             </div>
         </div>
-        
+    </div>
+    {{ rating }}
+    <!-- <div class="row"> -->
+        {% for review in reviews %}
+        <div class="col s12 m8">
+            <div class="card-panel teal">
+                <span class="white-text">
+                    {{ review.review }}
+                </span>
+                <span>
+                    {{ review.reviewed_by }}
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+    <!-- </div> -->
+</div>
 
-        <div class="col s12 m4">
-            <form method="POST" action="{{ url_for('display_finisher', finisher_id=finisher._id) }}" >
-                {{ form.csrf_token }} 
-                {{ form.review.label }} {{ form.review(size=20) }}
-                <button type="submit" class="col s12 btn-large">Add review</button>
-            </form>    
-        </div>    
+
+
+
+<div class="col s12 m4">
+    <form method="POST" action="{{ url_for('display_finisher', finisher_id=finisher._id) }}">
+        {{ form.csrf_token }}
+        {% for subfield in form.vote %}
+        <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+        </tr>
+        {% endfor %}
+        {{ form.review.label }} {{ form.review(size=20) }}
+        <button type="submit" class="col s12 btn-large">Add review</button>
+    </form>
+</div>
 
 
 {% endblock %}
