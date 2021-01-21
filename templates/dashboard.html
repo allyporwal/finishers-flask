@@ -38,7 +38,6 @@
                     </div>
                     <div class="card-action">
                         <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
-                        <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
                         <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
                     </div>
                 </div>
@@ -77,7 +76,6 @@
                         <p>{{ added_finisher.instructions }}</p>
                     </div>
                     <div class="card-action">
-                        <a href="{{ url_for('edit_finisher', finisher_id=added_finisher._id) }}">Edit and add</a>
                         <a href="{{ url_for('display_finisher', finisher_id=added_finisher._id) }}">Review</a>
                         <a href="{{ url_for('remove_from_library', finisher_id=added_finisher._id) }}">Remove</a>
                     </div>

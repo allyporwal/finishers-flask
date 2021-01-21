@@ -3,7 +3,7 @@
 
 <!-- Edit finisher form -->
 
-{{ finisher.finisher_name }}
+<h1>{{ finisher.finisher_name }}</h1>
 
 <div>
   <form method="POST" action="{{ url_for('edit_finisher', finisher_id=finisher._id) }}">
@@ -11,7 +11,7 @@
     <div class="row">
       <div class="input-field col s6">
         <input name="finisher_name" type="text" class="validate" value="{{ finisher.finisher_name}}" required />
-        <label for="finisher_name">Name your finisher:</label>
+        <label for="finisher_name">Rename the finisher:</label>
       </div>
       <div class="input-field col s6">
         <select name="categories" required>
@@ -32,7 +32,7 @@
     {% for exercises in finisher.exercises %}
     <div class="row">
       <div class="input-field col s6">
-        <input name="exercise_{{ loop.index }}" type="text" class="validate" value="{{ exercises.exercise_name }}" required />
+        <input name="exercise_{{ loop.index }}" type="text" class="validate autocomplete" value="{{ exercises.exercise_name }}" required />
         <label for="exercise">Exercise {{ loop.index }}:</label>
       </div>
       <div class="input-field col s3">
@@ -60,18 +60,6 @@
       </div>
     </div>
     {% endfor %}
-
-    <div class="row">
-    <div class="col s12">
-      <div class="row">
-        <div class="input-field col s12">
-          <i class="material-icons prefix"></i>
-          <input type="text" id="autocomplete-input" class="autocomplete">
-          <label for="autocomplete-input">Autocomplete</label>
-        </div>
-      </div>
-    </div>
-  </div>
 
     <!--  Instructions, time limit and submit button -->
 

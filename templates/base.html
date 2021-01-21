@@ -28,6 +28,9 @@
                     <li><a href="{{ url_for('dashboard', username=current_user.username) }}">Dashboard</a></li>
 					<li><a href="{{ url_for('browse_finishers') }}">Browse</a></li>
                     <li><a href="{{ url_for('add_finisher') }}">Create</a></li>
+                    {% if current_user.is_admin %}
+                        <li><a href="{{ url_for('add_exercises') }}">Add exercises</a></li>
+                    {% endif %}    
                     <li><a href="{{ url_for('logout') }}">Log Out</a></li>
                 {% else %}        
 					<li><a href="{{ url_for('register') }}">Register</a></li>

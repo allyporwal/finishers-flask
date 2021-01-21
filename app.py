@@ -34,6 +34,7 @@ class User(UserMixin):
         self.user_json = user_json
         self.username = self.user_json.get("username")
         self.library = self.user_json.get("library")
+        self.is_admin = self.user_json.get("is_admin")
 
     def get_id(self):
         object_id = self.user_json.get("_id")
@@ -77,8 +78,8 @@ class review_form(FlaskForm):
 
 class add_exercise(FlaskForm):
     exercise_name = StringField(
-        "exercise_name", validators=[InputRequired(), Length(
-            min=5, max=50,
+        "Exercise name:", validators=[InputRequired(), Length(
+            min=3, max=50,
             message="Must be between 5 and 50 characters long")])
 
 
@@ -103,7 +104,8 @@ def register():
         new_user = {
             "username": form.username.data.lower(),
             "password": generate_password_hash(form.password.data),
-            "library": []
+            "library": [],
+            "is_admin": False
         }
 
         mongo.db.users.insert_one(new_user)
@@ -179,7 +181,8 @@ def add_finisher():
             if key.startswith("set_type"):
                 form_input_nested[2].append(val)
 
-        # sort form_input_nested into an array of objects
+        # sort form_input_nested into an
+        # array of objects using list comprehension
         exercises = [{"exercise_name": a,
                       "set": b,
                       "set_type": c
@@ -194,6 +197,7 @@ def add_finisher():
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
             "reviews": [],
+            "votes": [],
             "created_by": current_user.username
         }
 
@@ -237,10 +241,11 @@ def edit_finisher(finisher_id):
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
             "reviews": [],
+            "votes": [],
             "created_by": current_user.username
         }
 
-        if edited_finisher["finisher_name"] == finisher["finisher_name"]:
+        if request.form.get("finisher_name") == finisher["finisher_name"]:
             flash("Please give a new name to the edited finisher")
         else:
             mongo.db.finishers.insert_one(edited_finisher)
@@ -282,7 +287,8 @@ def modify_finisher(finisher_id):
             "time_limit_toggle": time_limit_toggle,
             "time_limit": request.form.get("time_limit"),
             "instructions": request.form.get("instructions"),
-            "reviews": [],
+            "reviews": finisher["reviews"],
+            "votes": finisher["votes"],
             "created_by": current_user.username
         }
         mongo.db.finishers.update(
@@ -344,7 +350,10 @@ def display_finisher(finisher_id):
     categories = list(mongo.db.categories.find())
     reviews = list(finisher["reviews"])
     ratings = [int(i) for i in finisher["votes"]]
-    rating = sum(ratings)/len(ratings)
+    if len(ratings) != 0:
+        rating = sum(ratings)/len(ratings)
+    else:
+        rating = 0
 
     if form.validate_on_submit():
 
@@ -374,26 +383,25 @@ def browse_finishers():
         "browse_finishers.html", finishers=finishers, categories=categories)
 
 
-# page for admin user to add new exercises to collection
+# page for admin user to add new exercises to database
 @app.route("/add_exercises", methods=["GET", "POST"])
 @login_required
 def add_exercises():
     form = add_exercise()
-
-    if form.validate_on_submit():
-        exercise = {
-            form.exercise_name.data: None
-        }
-        flash("Exercise added to database")
-        mongo.db.exercises.insert_one(exercise)
-        return redirect(url_for("add_exercises"))
+    if current_user.is_admin:
+        if form.validate_on_submit():
+            exercise = {
+                form.exercise_name.data: None
+            }
+            flash("Exercise added to database")
+            mongo.db.exercises.insert_one(exercise)
+            return redirect(url_for("add_exercises"))
 
     return render_template("add_exercises.html", form=form)
 
 
 @app.route("/autofill", methods=["GET", "POST"])
 def autofill():
-
     if request.method == 'GET':
         message = list(mongo.db.exercises.find({}, {'_id': False}))
         return jsonify(message)
