@@ -53,19 +53,22 @@
     <!-- </div> -->
 </div>
 
-
-
-
 <div class="col s12 m4">
     <form method="POST" action="{{ url_for('display_finisher', finisher_id=finisher._id) }}">
-        {{ form.csrf_token }}
-        {% for subfield in form.vote %}
-        <tr>
-            <td>{{ subfield }}</td>
-            <td>{{ subfield.label }}</td>
-        </tr>
-        {% endfor %}
-        {{ form.review.label }} {{ form.review(size=20) }}
+        {{ form.csrf_token }}       
+        <p>
+        <label>
+            <input name="votes" type="radio" value="100" checked />
+            <span>Upvote</span>
+        </label>
+        </p>
+        <p>
+        <label>
+            <input name="votes" value="0" type="radio" />
+            <span>Downvote</span>
+        </label>
+        </p>
+        {{ form.review }}
         <button type="submit" class="col s12 btn-large">Add review</button>
     </form>
 </div>

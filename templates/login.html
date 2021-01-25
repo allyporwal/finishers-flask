@@ -2,19 +2,20 @@
 
 <section>
     <form class="col s12" method="POST" action="{{ url_for('login') }}">
-        <div class="row"></div>
-        {{ form.csrf_token }}
-        <div class="input-field col m6 s12">
-            {{ form.username.label }} {{ form.username(size=20) }}
-        </div>
-        <div class="input-field col m6 s12">
-            {{ form.password.label }} {{ form.password(size=20) }}
-        </div>
-        <div class="input-field col m6 s12">
-            <button type="submit" class="col s12 btn-large">
-                Login
-                <i class="fas fa-sign-in-alt"></i>
-            </button>
+        <div class="row">
+            {{ form.csrf_token }}
+            <div class="input-field col m6 s12">
+                {{ form.username.label }} {{ form.username(size=20) }}
+            </div>
+            <div class="input-field col m6 s12">
+                {{ form.password.label }} {{ form.password(size=20) }}
+            </div>
+            <div class="input-field col m6 s12">
+                <button type="submit" class="col s12 btn-large">
+                    Login
+                    <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
         </div>
     </form>
 </section>

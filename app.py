@@ -5,7 +5,8 @@ from flask import (
 from flask_wtf import FlaskForm
 from flask_wtf.csrf import CsrfProtect
 from wtforms import (
-    StringField, PasswordField, TextAreaField, RadioField)
+    StringField, PasswordField, TextAreaField,
+    IntegerField)
 from wtforms.validators import InputRequired, Length, Regexp, EqualTo
 from flask_login import (
     UserMixin, LoginManager, current_user,
@@ -32,9 +33,9 @@ mongo = PyMongo(app)
 class User(UserMixin):
     def __init__(self, user_json):
         self.user_json = user_json
-        self.username = self.user_json.get("username")
-        self.library = self.user_json.get("library")
-        self.is_admin = self.user_json.get("is_admin")
+        self.username = user_json.get("username")
+        self.library = user_json.get("library")
+        self.is_admin = user_json.get("is_admin")
 
     def get_id(self):
         object_id = self.user_json.get("_id")
@@ -72,7 +73,6 @@ class login_form(FlaskForm):
 
 
 class review_form(FlaskForm):
-    vote = RadioField("vote", choices=[(100, "upvote"), (0, "downvote")])
     review = TextAreaField("review", validators=[InputRequired()])
 
 
@@ -81,6 +81,14 @@ class add_exercise(FlaskForm):
         "Exercise name:", validators=[InputRequired(), Length(
             min=3, max=50,
             message="Must be between 5 and 50 characters long")])
+
+
+class add_finisher_form(FlaskForm):
+    finisher_name = StringField(
+        "Name your finisher:", validators=[InputRequired()])
+    exercise = StringField("Exercise:", validators=[InputRequired()])
+    reps = IntegerField("Reps:", validators=[InputRequired()])
+    instructions = StringField("Exercise:", validators=[InputRequired()])
 
 
 @app.route("/")
@@ -156,20 +164,22 @@ def dashboard(username):
     finishers = mongo.db.finishers.find({"created_by": current_user.username})
     added_finishers = mongo.db.finishers.find(
         {"_id": {"$in": current_user.library}})
+    categories = list(mongo.db.categories.find())
 
     if current_user.is_authenticated:
         return render_template(
             "dashboard.html", username=current_user.username,
-            finishers=finishers, added_finishers=added_finishers)
+            finishers=finishers, categories=categories,
+            added_finishers=added_finishers)
 
     return redirect(url_for("login"))
 
 
-# Allow a user to add a finisher to the database
 @app.route("/add_finisher", methods=["GET", "POST"])
 @login_required
 def add_finisher():
     categories = mongo.db.categories.find()
+    form = add_finisher_form()
 
     if request.method == "POST":
         form_input_nested = [[], [], []]
@@ -205,7 +215,7 @@ def add_finisher():
         return redirect(url_for("dashboard", username=current_user.username))
 
     return render_template(
-        "add_finisher.html", categories=categories)
+        "add_finisher.html", form=form, categories=categories)
 
 
 # Allow a user to edit a finisher and then add to their library
@@ -365,7 +375,7 @@ def display_finisher(finisher_id):
             {"_id": ObjectId(finisher_id)}, {"$push": {"reviews": review}})
         mongo.db.finishers.update(
             {"_id": ObjectId(finisher_id)},
-            {"$push": {"votes": form.vote.data}})
+            {"$push": {"votes": request.form.get("votes")}})
         return redirect(url_for("display_finisher", finisher_id=finisher_id))
 
     return render_template("finisher.html", finisher=finisher, rating=rating,
@@ -390,9 +400,18 @@ def add_exercises():
     form = add_exercise()
     if current_user.is_admin:
         if form.validate_on_submit():
+
+            exercise_exists = mongo.db.exercises.find_one(
+                {form.exercise_name.data: {"$exists": True}})
+
+            if exercise_exists:
+                flash("Exercise already in database")
+                return redirect(url_for("add_exercises"))
+
             exercise = {
                 form.exercise_name.data: None
             }
+
             flash("Exercise added to database")
             mongo.db.exercises.insert_one(exercise)
             return redirect(url_for("add_exercises"))
