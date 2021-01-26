@@ -1,3 +1,13 @@
 .hidden_exercise {
     display: none;
 }
+
+.tabs {
+    display:-webkit-flex;
+    display: -ms-flexbox;
+    display: flex
+}
+
+p {
+    padding: 0 .75rem;
+}

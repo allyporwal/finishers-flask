@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-
 <div class="row">
     <div class="col s12">
       <ul class="tabs">
@@ -9,7 +8,6 @@
         {% for category in categories %}
             <li class="tab col s3"><a href="#{{ category.category_name }}">{{ category.category_name }}</a></li>
         {% endfor %}
-        
       </ul>
     </div>
     <div id="All" class="col s12">
@@ -43,11 +41,17 @@
                         </div>
                         <span>Instructions:</span>
                         <p>{{ finisher.instructions }}</p>
+                        <span>Created by: {{ finisher.created_by }}</span>
                     </div>
                     <div class="card-action">
-                        <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
-                        <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
-                        <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
+                        {% if current_user.username == finisher.created_by %}
+                            <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
+                            <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a> 
+                        {% else %}
+                            <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Star</a>
+                            <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Clone</a>
+                            <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -85,11 +89,17 @@
                                 </div>
                                 <span>Instructions:</span>
                                 <p>{{ finisher.instructions }}</p>
+                                <span>Created by: {{ finisher.created_by }}</span>
                             </div>
                             <div class="card-action">
-                                <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Add to library</a>
-                                <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Edit and add</a>
-                                <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
+                                {% if current_user.username == finisher.created_by %}
+                                    <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
+                                    <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a> 
+                                {% else %}
+                                    <a href="{{ url_for('add_to_library', finisher_id=finisher._id) }}">Star</a>
+                                    <a href="{{ url_for('edit_finisher', finisher_id=finisher._id)}}">Clone</a>
+                                    <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}">Review</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

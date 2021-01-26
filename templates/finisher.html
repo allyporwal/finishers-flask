@@ -29,10 +29,16 @@
                 </div>
                 <span>Instructions:</span>
                 <p>{{ finisher.instructions }}</p>
+                <span>Created by: {{ finisher.created_by }}</span>
             </div>
             <div class="card-action">
-                <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
-                <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
+                {% if current_user.username == finisher.created_by %}
+                    <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
+                    <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
+                {% else %}
+                    <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
+                    <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
+                {% endif %}
             </div>
         </div>
     </div>

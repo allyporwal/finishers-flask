@@ -44,16 +44,16 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    user_obj = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    user_obj = mongo.db.users.find_one({"_id": ObjectId(user_id)})
     return User(user_obj)
 
 
 class registration_form(FlaskForm):
-    username = StringField("username", validators=[InputRequired(), Length(
+    username = StringField("Username", validators=[InputRequired(), Length(
         min=5, max=20, message="Must be between 5 and 20 characters long"),
         Regexp("^[a-zA-Z0-9_]*$",
                message="Please use letters and/or numbers only")])
-    password = PasswordField("password", validators=[InputRequired(), Length(
+    password = PasswordField("Password", validators=[InputRequired(), Length(
         min=5, max=20, message="Must be between 5 and 20 characters long"),
         Regexp("^[a-zA-Z0-9_]*$",
                message="Please use letters and/or numbers only")])
@@ -122,7 +122,7 @@ def register():
         loginUser = User(username_exists)
         login_user(loginUser)
 
-        return redirect(url_for("dashboard", username=new_user["username"]))
+        return redirect(url_for("dashboard"))
 
     return render_template("register.html", form=form)
 
@@ -143,8 +143,7 @@ def login():
                     form.password.data):
                 loginUser = User(username_exists)
                 login_user(loginUser)
-                return redirect(url_for(
-                    "dashboard", username=username_exists["username"]))
+                return redirect(url_for("dashboard"))
 
             else:
                 flash("Invalid username and/or password")
@@ -158,9 +157,9 @@ def login():
 
 
 # Display the user's dashboard
-@app.route("/dashboard/<username>", methods=["GET", "POST"])
+@app.route("/dashboard")
 @login_required
-def dashboard(username):
+def dashboard():
     finishers = mongo.db.finishers.find({"created_by": current_user.username})
     added_finishers = mongo.db.finishers.find(
         {"_id": {"$in": current_user.library}})
@@ -168,7 +167,7 @@ def dashboard(username):
 
     if current_user.is_authenticated:
         return render_template(
-            "dashboard.html", username=current_user.username,
+            "dashboard.html",
             finishers=finishers, categories=categories,
             added_finishers=added_finishers)
 
@@ -212,7 +211,7 @@ def add_finisher():
         }
 
         mongo.db.finishers.insert_one(finisher)
-        return redirect(url_for("dashboard", username=current_user.username))
+        return redirect(url_for("dashboard"))
 
     return render_template(
         "add_finisher.html", form=form, categories=categories)
@@ -260,7 +259,7 @@ def edit_finisher(finisher_id):
         else:
             mongo.db.finishers.insert_one(edited_finisher)
             return redirect(url_for(
-                "dashboard", username=current_user.username))
+                "dashboard"))
 
     return render_template(
         "edit_finisher.html", finisher=finisher, categories=categories)
@@ -303,7 +302,7 @@ def modify_finisher(finisher_id):
         }
         mongo.db.finishers.update(
             {"_id": ObjectId(finisher_id)}, modified_finisher)
-        return redirect(url_for("dashboard", username=current_user.username))
+        return redirect(url_for("dashboard"))
     return render_template(
         "modify_finisher.html", finisher=finisher, categories=categories)
 
@@ -317,7 +316,7 @@ def add_to_library(finisher_id):
         {"username": current_user.username}, {"$push": {"library": finisher}})
 
     flash("Finisher added to library")
-    return redirect(url_for("dashboard", username=current_user.username))
+    return redirect(url_for("dashboard"))
 
 
 # User can remove a finisher from their library without deleting it from DB
@@ -330,7 +329,7 @@ def remove_from_library(finisher_id):
         {"username": current_user.username}, {"$pull": {"library": finisher}})
 
     flash("Finisher removed from library")
-    return redirect(url_for("dashboard", username=current_user.username))
+    return redirect(url_for("dashboard"))
 
 
 # Allows a user to completely delete a finisher they authored
@@ -343,11 +342,11 @@ def delete_finisher(finisher_id):
     if current_user.username == finisher_creator:
         mongo.db.finishers.remove({"_id": ObjectId(finisher_id)})
         flash("Finisher deleted")
-        return redirect(url_for("dashboard", username=current_user.username))
+        return redirect(url_for("dashboard"))
 
     else:
         flash("You can only delete finishers you have created")
-        return redirect(url_for("dashboard", username=current_user.username))
+        return redirect(url_for("dashboard"))
 
 
 # Shows an individual finisher and allows a user to review it
@@ -355,7 +354,7 @@ def delete_finisher(finisher_id):
 @login_required
 def display_finisher(finisher_id):
     form = review_form()
-    finisher = mongo.db.finishers.find_one(
+    finisher = mongo.db.finishers.find_one_or_404(
         {"_id": ObjectId(finisher_id)})
     categories = list(mongo.db.categories.find())
     reviews = list(finisher["reviews"])

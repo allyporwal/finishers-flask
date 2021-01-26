@@ -4,113 +4,100 @@
 
 <!-- Create finisher form -->
 
-<div>
-  <form method="POST" action="{{ url_for('add_finisher') }}">
-    {{ form.csrf_token }}
-    <div class="row">
-      <div class="input-field col s6">
-        {{ form.finisher_name(size=20, id="finisher_name") }}
-        <!-- <input name="finisher_name" type="text" class="validate" required /> -->
-        <label for="finisher_name">Name your finisher:</label>
-      </div>
-      <div class="input-field col s6">
-        <select name="categories" required>
-          <option value="" disabled selected>Choose finisher type</option>
-            {% for category in categories %}
-                <option value="{{ category.category_name }}">
-                    {{ category.category_name }}
-                </option>
-            {% endfor %}
-        </select>
-        <label for="">Select category</label>
-      </div>
-    </div>
-
-    <!-- Exercise 1 -->
-
-    <div class="row">
-        <div class="input-field col m6 s12">
-            <input name="exercise_1" type="text" class="validate autocomplete"  />
-            <label for="exercise_1">Exercise 1:</label>
+<section>
+    <form method="POST" action="{{ url_for('add_finisher') }}">
+        {{ form.csrf_token }}
+        <div class="row">
+            <div class="input-field col s6">
+                {{ form.finisher_name(size=20, id="finisher_name") }}
+                <label for="finisher_name">Name finisher:</label>
+            </div>
+            <div class="input-field col s6">
+                <select name="categories" required>
+                    <option value="" disabled selected></option>
+                    {% for category in categories %}
+                    <option value="{{ category.category_name }}">
+                        {{ category.category_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <label for="">Select category</label>
+            </div>
         </div>
-        <div class="input-field col m3 s6">
-            <input name="reps_1" type="number" class="validate"  />
-            <label for="reps_1">for:</label>
-        </div>
-        <div class="input-field col m3 s6">
-            <select id="exercise_set_type_select_1" name="set_type_1" >
-            <option value="" disabled selected></option>
-            <option value="reps">reps</option>
-            <option value="seconds">seconds</option>
-            <option value="metres">metres</option>
-            </select>
-            <label for="set_type_1">Reps/time/distance:</label>
-        </div>
-    </div>
 
-    <!-- Next 9 exercise rows -->
+        <!-- Exercise 1 -->
 
-    {% for x in range(2, 11, 1) %}
+        <div class="row">
+            <p>Add up to 10 exercises below:</p>
+            <div class="input-field col m6 s12">
+                {{ form.exercise(size=20, class="autocomplete validate") }}
+                <label for="exercise_1">Exercise 1:</label>
+            </div>
+            <div class="input-field col m3 s6">
+                {{ form.reps(size=20, class="validate") }}
+                <label for="reps_1">for:</label>
+            </div>
+            <div class="input-field col m3 s6">
+                <select id="exercise_set_type_select_1" name="set_type_1">
+                    <option value="" disabled selected></option>
+                    <option value="reps">reps</option>
+                    <option value="seconds">seconds</option>
+                    <option value="metres">metres</option>
+                </select>
+                <label for="set_type_1">Reps/time/distance:</label>
+            </div>
+        </div>
+
+        <!-- Next 9 exercise rows -->
+
+        {% for x in range(2, 11, 1) %}
         <div id="exercise_{{ x }}" class="row hidden_exercise">
             <div class="input-field col m6 s12">
-                <input name="exercise_{{ x }}" type="text" class="validate autocomplete"  />
+                <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
                 <label for="exercise">Exercise {{ x }}:</label>
             </div>
             <div class="input-field col m3 s6">
-                <input name="reps_{{ x }}" type="number" class="validate"  />
+                <input name="reps_{{ x }}" type="number" class="validate" />
                 <label for="reps_{{ x }}">for:</label>
             </div>
             <div class="input-field col m3 s6">
-                <select id="exercise_set_type_select_{{ x }}" name="set_type_{{ x }}" >
-                <option value="" disabled selected></option>
-                <option value="reps">reps</option>
-                <option value="seconds">seconds</option>
-                <option value="metres">metres</option>
+                <select id="exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
+                    <option value="" disabled selected></option>
+                    <option value="reps">reps</option>
+                    <option value="seconds">seconds</option>
+                    <option value="metres">metres</option>
                 </select>
                 <label for="set_type_{{ x }}">Reps/time/distance:</label>
             </div>
         </div>
-    {% endfor %} 
-    
-    <!--  Instructions, time limit and submit button -->
+        {% endfor %}
 
-    <div class="row">
-      <div class="input-field col s12">
-        <textarea
-          name="instructions"
-          class="materialize-textarea"
-          required
-        ></textarea>
-        <label for="instructions">Instructions:</label>
-      </div>
-    </div>
-    <div class="row">
-      <div class="input-field col s4">
-        <div class="switch">
-          <label for="time_limit_toggle">Time limit?</label>
-          <label>
-            Off
-            <input
-              name="time_limit_toggle"
-              id="time_limit_toggle"
-              type="checkbox"
-            />
-            <span class="lever"></span>
-            On
-          </label>
+        <!--  Instructions, time limit and submit button -->
+
+        <div class="row">
+            <div class="input-field col s12">
+                {{ form.instructions(size=20, class="autocomplete") }}
+                <label for="instructions">Instructions:</label>
+            </div>
         </div>
-      </div>
-      <div class="input-field col s4">
-        <input
-          name="time_limit"
-          id="time_limit"
-          type="number"
-          class="validate"
-        />
-        <label for="time_limit">Time limit:</label>
-      </div>
-    </div>
-    <button type="submit" class="col s12 btn-large">Add finisher</button>
-  </form>
-</div>
+        <div class="row">
+            <div class="input-field col m4 s12">
+                <div class="switch">
+                    <label for="time_limit_toggle">Time limit?</label>
+                    <label>
+                        Off
+                        <input name="time_limit_toggle" id="time_limit_toggle" type="checkbox" />
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+            <div class="input-field col s6 m4">
+                <input name="time_limit" id="time_limit" type="number" class="validate" />
+                <label for="time_limit">Time limit:</label>
+            </div>
+        </div>
+        <button type="submit" class="col s6 m4 btn-large">Add finisher</button>
+    </form>
+</section>
 {% endblock %}

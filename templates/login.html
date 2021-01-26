@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block content %}
 
 <section>
+    <div class="container">
     <form class="col s12" method="POST" action="{{ url_for('login') }}">
         <div class="row">
             {{ form.csrf_token }}
@@ -10,14 +11,20 @@
             <div class="input-field col m6 s12">
                 {{ form.password.label }} {{ form.password(size=20) }}
             </div>
-            <div class="input-field col m6 s12">
-                <button type="submit" class="col s12 btn-large">
+            <div class="input-field col s12 center-align">
+                <button type="submit" class="btn-large ">
                     Login
                     <i class="fas fa-sign-in-alt"></i>
                 </button>
             </div>
+            <div class="row">
+                <div class="col s12 center-align">
+                    <p>Not yet registered? <a href="{{ url_for('register') }}">Register here.</a></p>
+                </div>
+            </div>    
         </div>
     </form>
+    </div>
 </section>
 
 {% endblock %}
