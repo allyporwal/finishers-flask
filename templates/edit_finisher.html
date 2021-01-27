@@ -1,9 +1,11 @@
+<title>Clone Finisher | The Finisher</title>
+
 {% extends "base.html" %}
 {% block content %}
 
 <!-- Edit finisher form -->
 
-<h1>{{ finisher.finisher_name }}</h1>
+<h1>Clone {{ finisher.finisher_name }}</h1>
 
 <div>
   <form method="POST" action="{{ url_for('edit_finisher', finisher_id=finisher._id) }}">
@@ -63,8 +65,27 @@
             </div>
     {% endfor %}
 
+            <div id="edited_exercise_{{ finisher.exercises|length+1 }}" class="row">
+                <div class="input-field col m6 s12">
+                    <input name="exercise_{{ finisher.exercises|length+1 }}" type="text" class="validate autocomplete" />
+                    <label for="exercise">Exercise {{ x }}:</label>
+                </div>
+                <div class="input-field col m3 s6">
+                    <input name="reps_{{ finisher.exercises|length+1 }}" type="number" class="validate" />
+                    <label for="reps_{{ finisher.exercises|length+1 }}">for:</label>
+                </div>
+                <div class="input-field col m3 s6">
+                    <select id="edited_exercise_set_type_select_{{ finisher.exercises|length+1 }}" name="set_type_{{ finisher.exercises|length+1 }}">
+                        <option value="" disabled selected></option>
+                        <option value="reps">reps</option>
+                        <option value="seconds">seconds</option>
+                        <option value="metres">metres</option>
+                    </select>
+                    <label for="set_type_{{ x }}">Reps/time/distance:</label>
+                </div>
+            </div>
 
-    {% for x in range(finisher.exercises|length+1, 11, 1) %}
+    {% for x in range(finisher.exercises|length+2, 11, 1) %}
             <div id="edited_exercise_{{ x }}" class="row hidden_exercise">
                 <div class="input-field col m6 s12">
                     <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
@@ -84,7 +105,7 @@
                     <label for="set_type_{{ x }}">Reps/time/distance:</label>
                 </div>
             </div>
-        {% endfor %}
+    {% endfor %}
 
     <!--  Instructions, time limit and submit button -->
 
@@ -132,7 +153,7 @@
         <label for="time_limit">Time limit:</label>
       </div>
     </div>
-    <button type="submit" class="col s12 btn-large">Edit and add finisher</button>
+    <button type="submit" class="col s12 btn-large">Clone and add finisher</button>
   </form>
 </div>
 

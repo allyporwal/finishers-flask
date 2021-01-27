@@ -99,6 +99,9 @@ def home_page():
 # Allow a user to register
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
     form = registration_form()
     if form.validate_on_submit():
 
@@ -130,6 +133,9 @@ def register():
 # Allow a user to login
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+
     form = login_form()
 
     if form.validate_on_submit():
@@ -223,7 +229,8 @@ def add_finisher():
 @app.route("/edit_finisher/<finisher_id>", methods=["GET", "POST"])
 @login_required
 def edit_finisher(finisher_id):
-    finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
+    finisher = mongo.db.finishers.find_one_or_404(
+        {"_id": ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
 
     if request.method == "POST":
@@ -271,7 +278,8 @@ def edit_finisher(finisher_id):
 @app.route("/modify_finisher/<finisher_id>", methods=["GET", "POST"])
 @login_required
 def modify_finisher(finisher_id):
-    finisher = mongo.db.finishers.find_one({"_id": ObjectId(finisher_id)})
+    finisher = mongo.db.finishers.find_one_or_404(
+        {"_id": ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
 
     if request.method == "POST":

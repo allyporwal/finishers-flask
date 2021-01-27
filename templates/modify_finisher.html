@@ -3,7 +3,7 @@
 
 <!-- Edit finisher form -->
 
-<h1>{{ finisher.finisher_name }}</h1>
+<h1>Edit {{ finisher.finisher_name }}</h1>
 
 <div>
   <form method="POST" action="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">
