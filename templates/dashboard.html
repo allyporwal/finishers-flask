@@ -7,7 +7,25 @@
 
 </p>
 
-<div class="col s12">
+{% if current_user.is_admin == false %}
+
+    {% if current_user.library|length == 0 %}
+        <h4>Looks like you've starred no finishers</h4>
+        <p>
+            Click here to browse finishers created by other users
+        </p>
+    {% endif %}
+
+    {% if finishers|length == 0 %}
+        <h4>Looks like you're yet to create your first finisher</h4>
+        <p>
+            Click here to create a finisher
+        </p>
+    {% endif %}
+    
+{% endif %}    
+
+<div class="">
         <div class="row">
             {% for finisher in finishers %}
             <div class="col s12 m4">
@@ -44,9 +62,7 @@
             </div>
             {% endfor %}
         </div>
-    </div>
 
-<div class="col s12">
         <div class="row">
             {% for added_finisher in added_finishers %}
             <div class="col s12 m4">
@@ -74,6 +90,7 @@
                         </div>
                         <span>Instructions:</span>
                         <p>{{ added_finisher.instructions }}</p>
+                        <span>Created by: {{ added_finisher.created_by }}</span>
                     </div>
                     <div class="card-action">
                         <a href="{{ url_for('display_finisher', finisher_id=added_finisher._id) }}">Review</a>

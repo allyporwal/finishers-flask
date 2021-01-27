@@ -160,7 +160,8 @@ def login():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    finishers = mongo.db.finishers.find({"created_by": current_user.username})
+    finishers = list(
+        mongo.db.finishers.find({"created_by": current_user.username}))
     added_finishers = mongo.db.finishers.find(
         {"_id": {"$in": current_user.library}})
     categories = list(mongo.db.categories.find())

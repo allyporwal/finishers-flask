@@ -28,7 +28,7 @@
         <!-- Exercise 1 -->
 
         <div class="row">
-            <p>Add up to 10 exercises below:</p>
+            <p class="add-finisher-paragraph">Add up to 10 exercises below:</p>
             <div class="input-field col m6 s12">
                 {{ form.exercise(size=20, class="autocomplete validate") }}
                 <label for="exercise_1">Exercise 1:</label>
@@ -51,25 +51,25 @@
         <!-- Next 9 exercise rows -->
 
         {% for x in range(2, 11, 1) %}
-        <div id="exercise_{{ x }}" class="row hidden_exercise">
-            <div class="input-field col m6 s12">
-                <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
-                <label for="exercise">Exercise {{ x }}:</label>
+            <div id="exercise_{{ x }}" class="row hidden_exercise">
+                <div class="input-field col m6 s12">
+                    <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
+                    <label for="exercise">Exercise {{ x }}:</label>
+                </div>
+                <div class="input-field col m3 s6">
+                    <input name="reps_{{ x }}" type="number" class="validate" />
+                    <label for="reps_{{ x }}">for:</label>
+                </div>
+                <div class="input-field col m3 s6">
+                    <select id="exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
+                        <option value="" disabled selected></option>
+                        <option value="reps">reps</option>
+                        <option value="seconds">seconds</option>
+                        <option value="metres">metres</option>
+                    </select>
+                    <label for="set_type_{{ x }}">Reps/time/distance:</label>
+                </div>
             </div>
-            <div class="input-field col m3 s6">
-                <input name="reps_{{ x }}" type="number" class="validate" />
-                <label for="reps_{{ x }}">for:</label>
-            </div>
-            <div class="input-field col m3 s6">
-                <select id="exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
-                    <option value="" disabled selected></option>
-                    <option value="reps">reps</option>
-                    <option value="seconds">seconds</option>
-                    <option value="metres">metres</option>
-                </select>
-                <label for="set_type_{{ x }}">Reps/time/distance:</label>
-            </div>
-        </div>
         {% endfor %}
 
         <!--  Instructions, time limit and submit button -->

@@ -28,38 +28,63 @@
       </div>
     </div>
 
+    
+
     <!-- Exercise inputs -->
-    {% for exercises in finisher.exercises %}
-    <div class="row">
-      <div class="input-field col s6">
-        <input name="exercise_{{ loop.index }}" type="text" class="validate autocomplete" value="{{ exercises.exercise_name }}" required />
-        <label for="exercise">Exercise {{ loop.index }}:</label>
-      </div>
-      <div class="input-field col s3">
-        <input name="reps_{{ loop.index }}" type="number" class="validate" value="{{ exercises.set }}" required />
-        <label for="reps_{{ loop.index }}">for:</label>
-      </div>
-      <div class="input-field col s3">
-        <select id="exercise_set_type_select" name="set_type_{{ loop.index }}" required>
-          <option value="" disabled>Choose your option</option>
-          {% if exercises.set_type == "reps" %}
-            <option value="reps" selected>reps</option>
-            <option value="seconds">seconds</option>
-            <option value="metres">metres</option>
-          {% elif exercises.set_type == "seconds" %}  
-            <option value="reps">reps</option>
-            <option value="seconds" selected>seconds</option>
-            <option value="metres">metres</option>
-          {% else %}
-            <option value="reps">reps</option>
-            <option value="seconds">seconds</option>
-            <option value="metres" selected>metres</option>
-          {% endif %}    
-        </select>
-        <label for="set_type_{{ loop.index }}">Reps/time/distance:</label>
-      </div>
-    </div>
+    {% for x in range(1, finisher.exercises|length+1, 1) %}
+        <div id="exercise_{{ x }}" class="row">
+            <div class="input-field col m6 s12">
+                <input name="exercise_{{ x }}" type="text" value="{{ finisher.exercises[loop.index-1].exercise_name }}" class="validate autocomplete" />
+                <label for="exercise">Exercise {{ x }}:</label>
+            </div>
+            <div class="input-field col m3 s6">
+                <input name="reps_{{ x }}" value="{{ finisher.exercises[loop.index-1].set }}" type="number" class="validate" />
+                <label for="reps_{{ x }}">for:</label>
+            </div>
+            <div class="input-field col s3">
+                <select id="edited_exercise_set_type_select_{{ loop.index }}" name="set_type_{{ loop.index }}" required>
+                <option value="" disabled>Choose your option</option>
+                {% if finisher.exercises[loop.index-1].set_type == "reps" %}
+                    <option value="reps" selected>reps</option>
+                    <option value="seconds">seconds</option>
+                    <option value="metres">metres</option>
+                {% elif finisher.exercises[loop.index-1].set_type == "seconds" %}  
+                    <option value="reps">reps</option>
+                    <option value="seconds" selected>seconds</option>
+                    <option value="metres">metres</option>
+                {% else %}
+                    <option value="reps">reps</option>
+                    <option value="seconds">seconds</option>
+                    <option value="metres" selected>metres</option>
+                {% endif %}    
+                </select>
+                <label for="set_type_{{ loop.index }}">Reps/time/distance:</label>
+            </div>
+            </div>
     {% endfor %}
+
+
+    {% for x in range(finisher.exercises|length+1, 11, 1) %}
+            <div id="edited_exercise_{{ x }}" class="row hidden_exercise">
+                <div class="input-field col m6 s12">
+                    <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
+                    <label for="exercise">Exercise {{ x }}:</label>
+                </div>
+                <div class="input-field col m3 s6">
+                    <input name="reps_{{ x }}" type="number" class="validate" />
+                    <label for="reps_{{ x }}">for:</label>
+                </div>
+                <div class="input-field col m3 s6">
+                    <select id="edited_exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
+                        <option value="" disabled selected></option>
+                        <option value="reps">reps</option>
+                        <option value="seconds">seconds</option>
+                        <option value="metres">metres</option>
+                    </select>
+                    <label for="set_type_{{ x }}">Reps/time/distance:</label>
+                </div>
+            </div>
+        {% endfor %}
 
     <!--  Instructions, time limit and submit button -->
 

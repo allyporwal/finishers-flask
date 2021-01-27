@@ -55,3 +55,39 @@ $("#exercise_set_type_select_8").change(function() {
 $("#exercise_set_type_select_9").change(function() {
     $("#exercise_10").show("slow");
 });
+
+$("#edited_exercise_set_type_select_1").change(function() {
+    $("#edited_exercise_2").show("slow");
+});
+
+$("#edited_exercise_set_type_select_2").change(function() {
+    $("#edited_exercise_3").show("slow");
+});
+
+$("#edited_exercise_set_type_select_3").change(function() {
+    $("#edited_exercise_4").show("slow");
+});
+
+$("#edited_exercise_set_type_select_4").change(function() {
+    $("#edited_exercise_5").show("slow");
+});
+
+$("#edited_exercise_set_type_select_5").change(function() {
+    $("#edited_exercise_6").show("slow");
+});
+
+$("#edited_exercise_set_type_select_6").change(function() {
+    $("#edited_exercise_7").show("slow");
+});
+
+$("#edited_exercise_set_type_select_7").change(function() {
+    $("#edited_exercise_8").show("slow");
+});
+
+$("#edited_exercise_set_type_select_8").change(function() {
+    $("#edited_exercise_9").show("slow");
+});
+
+$("#edited_exercise_set_type_select_9").change(function() {
+    $("#edited_exercise_10").show("slow");
+});
