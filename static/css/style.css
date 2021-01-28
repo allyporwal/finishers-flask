@@ -1,3 +1,51 @@
+/* backgrounds and images */
+
+.callout-background {
+    height: 80vh;
+    background: url(../images/people_training.jpg) no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.callout-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(41, 44, 121, 0.7);
+}
+
+/* text */
+
+#callout-header {
+    color: azure;
+    font-weight: 200;
+    font-size: 3.8rem;
+    margin-top: 15vh;
+}
+
+.callout-text {
+    color: azure;
+    font-weight: 100;
+}
+
+.navbar-logo {
+    color: rgba(71, 75, 189, 1) !important;
+}
+
+.navbar-links {
+    color: rgba(71, 75, 189, 1) !important;
+}
+
+/* misc */
+
 .hidden_exercise {
     display: none;
 }
@@ -10,4 +58,8 @@
 
 .add-finisher-paragraph {
     padding: 0 .75rem;
+}
+
+#footer {
+    height: 5vh;
 }

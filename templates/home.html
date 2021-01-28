@@ -2,16 +2,29 @@
 
 {% extends "base.html" %} {% block content %}
 
-<section>
-  <button class="btn-large light-blue darken-1 text-shadow">
-    <a href="{{ url_for('register') }}"
-      >Sign Up<i class="fas fa-plus-square right"></i
-    ></a>
-  </button>
+<section class="callout-background">
+    <div class="callout-container" id="callout">
+        <div class="callout-bg-overlay">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="s12 center-align">
+                            <h1 id="callout-header">Need something to finish
+                                you at the end of your next workout?</h1>
+                            <p class="callout-text">You're in the right place</p>
+                            <p class="callout-text">Welcome to Finishers</p>
+                            <section>
+                                <button class="btn-large text-shadow">
+                                    <a href="{{ url_for('register') }}">Sign Up<i class="fas fa-plus-square right"></i></a>
+                                </button>
+                            </section>
+                            <!-- Modal -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-
-{% for finisher in finishers %}
-    {{ finisher.exercises.exercise_name }}<br>
-{% endfor %}
 
 {% endblock %}

@@ -6,137 +6,145 @@
 <h1>Edit {{ finisher.finisher_name }}</h1>
 
 <div>
-  <form method="POST" action="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-    <div class="row">
-      <div class="input-field col s6">
-        <input name="finisher_name" type="text" class="validate" value="{{ finisher.finisher_name}}" required />
-        <label for="finisher_name">Name your finisher:</label>
-      </div>
-      <div class="input-field col s6">
-        <select name="categories" required>
-          <option value="" disabled>Choose finisher type</option>
-          {% for category in categories %}
-            {% if category.category_name == finisher.category_name %}
+    <form method="POST" action="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="row">
+            <div class="input-field col s6">
+                <input name="finisher_name" type="text" class="validate" value="{{ finisher.finisher_name}}" required />
+                <label for="finisher_name">Name your finisher:</label>
+            </div>
+            <div class="input-field col s6">
+                <select name="categories" required>
+                    <option value="" disabled>Choose finisher type</option>
+                    {% for category in categories %}
+                    {% if category.category_name == finisher.category_name %}
                     <option value="{{ category.category_name }}" selected>{{ category.category_name }}</option>
-                {% else %}
+                    {% else %}
                     <option value="{{ category.category_name }}">{{ category.category_name }}</option>
-            {% endif %}            
-          {% endfor %}
-        </select>
-        <label for="">Select category</label>
-      </div>
-    </div>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <label for="">Select category</label>
+            </div>
+        </div>
 
-<!-- Existing exercise fields -->
+        <!-- Existing exercise fields -->
 
-    {% for x in range(1, finisher.exercises|length+1, 1) %}
-        <div id="exercise_{{ x }}" class="row">
+        {% for x in range(1, finisher.exercises|length+1, 1) %}
+        <div id="modified_exercise_{{ x }}" class="row">
             <div class="input-field col m6 s12">
-                <input name="exercise_{{ x }}" type="text" value="{{ finisher.exercises[loop.index-1].exercise_name }}" class="validate autocomplete" />
+                <input name="exercise_{{ x }}" type="text" value="{{ finisher.exercises[loop.index-1].exercise_name }}"
+                    class="validate autocomplete" />
                 <label for="exercise">Exercise {{ x }}:</label>
             </div>
             <div class="input-field col m3 s6">
-                <input name="reps_{{ x }}" value="{{ finisher.exercises[loop.index-1].set }}" type="number" class="validate" />
+                <input name="reps_{{ x }}" value="{{ finisher.exercises[loop.index-1].set }}" type="number"
+                    class="validate" />
                 <label for="reps_{{ x }}">for:</label>
             </div>
             <div class="input-field col s3">
-                <select id="edited_exercise_set_type_select_{{ loop.index }}" name="set_type_{{ loop.index }}" required>
-                <option value="" disabled>Choose your option</option>
-                {% if finisher.exercises[loop.index-1].set_type == "reps" %}
+                <select id="modified_exercise_set_type_select_{{ loop.index }}" name="set_type_{{ loop.index }}" required>
+                    <option value="" disabled>Choose your option</option>
+                    {% if finisher.exercises[loop.index-1].set_type == "reps" %}
                     <option value="reps" selected>reps</option>
                     <option value="seconds">seconds</option>
                     <option value="metres">metres</option>
-                {% elif finisher.exercises[loop.index-1].set_type == "seconds" %}  
+                    {% elif finisher.exercises[loop.index-1].set_type == "seconds" %}
                     <option value="reps">reps</option>
                     <option value="seconds" selected>seconds</option>
                     <option value="metres">metres</option>
-                {% else %}
+                    {% else %}
                     <option value="reps">reps</option>
                     <option value="seconds">seconds</option>
                     <option value="metres" selected>metres</option>
-                {% endif %}    
+                    {% endif %}
                 </select>
                 <label for="set_type_{{ loop.index }}">Reps/time/distance:</label>
             </div>
-            </div>
-    {% endfor %}
+        </div>
+        {% endfor %}
 
-    <!-- Fields for adding additional exercises -->
+        <!-- Extra row to ensure that next field can be dynamically loaded -->
 
-    {% for x in range(finisher.exercises|length+1, 11, 1) %}
-            <div id="edited_exercise_{{ x }}" class="row hidden_exercise">
-                <div class="input-field col m6 s12">
-                    <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
-                    <label for="exercise">Exercise {{ x }}:</label>
-                </div>
-                <div class="input-field col m3 s6">
-                    <input name="reps_{{ x }}" type="number" class="validate" />
-                    <label for="reps_{{ x }}">for:</label>
-                </div>
-                <div class="input-field col m3 s6">
-                    <select id="edited_exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
-                        <option value="" disabled selected></option>
-                        <option value="reps">reps</option>
-                        <option value="seconds">seconds</option>
-                        <option value="metres">metres</option>
-                    </select>
-                    <label for="set_type_{{ x }}">Reps/time/distance:</label>
-                </div>
+        <div id="modified_exercise_{{ finisher.exercises|length+1 }}" class="row">
+            <div class="input-field col m6 s12">
+                <input name="exercise_{{ finisher.exercises|length+1 }}" type="text" class="validate autocomplete" />
+                <label for="exercise">Exercise {{ finisher.exercises|length+1 }}:</label>
             </div>
+            <div class="input-field col m3 s6">
+                <input name="reps_{{ finisher.exercises|length+1 }}" type="number" class="validate" />
+                <label for="reps_{{ finisher.exercises|length+1 }}">for:</label>
+            </div>
+            <div class="input-field col m3 s6">
+                <select id="modified_exercise_set_type_select_{{ finisher.exercises|length+1 }}"
+                    name="set_type_{{ finisher.exercises|length+1 }}">
+                    <option value="" disabled selected></option>
+                    <option value="reps">reps</option>
+                    <option value="seconds">seconds</option>
+                    <option value="metres">metres</option>
+                </select>
+                <label for="set_type_{{ x }}">Reps/time/distance:</label>
+            </div>
+        </div>
+
+        <!-- Make up the difference to ensure that a max of 10 exercises can be added  -->
+
+        {% for x in range(finisher.exercises|length+2, 11, 1) %}
+        <div id="modified_exercise_{{ x }}" class="row hidden_exercise">
+            <div class="input-field col m6 s12">
+                <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
+                <label for="exercise">Exercise {{ x }}:</label>
+            </div>
+            <div class="input-field col m3 s6">
+                <input name="reps_{{ x }}" type="number" class="validate" />
+                <label for="reps_{{ x }}">for:</label>
+            </div>
+            <div class="input-field col m3 s6">
+                <select id="modified_exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
+                    <option value="" disabled selected></option>
+                    <option value="reps">reps</option>
+                    <option value="seconds">seconds</option>
+                    <option value="metres">metres</option>
+                </select>
+                <label for="set_type_{{ x }}">Reps/time/distance:</label>
+            </div>
+        </div>
         {% endfor %}
 
 
-    <!--  Instructions, time limit and submit button -->
+        <!--  Instructions, time limit and submit button -->
 
-    <div class="row">
-      <div class="input-field col s12">
-        <textarea
-          name="instructions"
-          class="materialize-textarea"
-          required
-        >{{ finisher.instructions }}</textarea>
-        <label for="instructions">Instructions:</label>
-      </div>
-    </div>
-    <div class="row">
-      <div class="input-field col s4">
-        <div class="switch">
-          <label for="time_limit_toggle">Time limit?</label>
-          <label>
-            Off
-            {% if finisher.time_limit_toggle == "on" %}
-                <input
-                name="time_limit_toggle"
-                id="time_limit_toggle"
-                type="checkbox"
-                checked
-                />
-            {% else %}
-                <input
-                name="time_limit_toggle"
-                id="time_limit_toggle"
-                type="checkbox"
-                />
-            {% endif %}
-            <span class="lever"></span>
-            On
-          </label>
+        <div class="row">
+            <div class="input-field col s12">
+                <textarea name="instructions" class="materialize-textarea"
+                    required>{{ finisher.instructions }}</textarea>
+                <label for="instructions">Instructions:</label>
+            </div>
         </div>
-      </div>
-      <div class="input-field col s4">
-        <input
-          name="time_limit"
-          id="time_limit"
-          type="number"
-          class="validate"
-          value="{{ finisher.time_limit }}"
-        />
-        <label for="time_limit">Time limit:</label>
-      </div>
-    </div>
-    <button type="submit" class="col s12 btn-large">Done</button>
-  </form>
+        <div class="row">
+            <div class="input-field col s4">
+                <div class="switch">
+                    <label for="time_limit_toggle">Time limit?</label>
+                    <label>
+                        Off
+                        {% if finisher.time_limit_toggle == "on" %}
+                        <input name="time_limit_toggle" id="time_limit_toggle" type="checkbox" checked />
+                        {% else %}
+                        <input name="time_limit_toggle" id="time_limit_toggle" type="checkbox" />
+                        {% endif %}
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+            </div>
+            <div class="input-field col s4">
+                <input name="time_limit" id="time_limit" type="number" class="validate"
+                    value="{{ finisher.time_limit }}" />
+                <label for="time_limit">Time limit:</label>
+            </div>
+        </div>
+        <button type="submit" class="col s12 btn-large">Done</button>
+    </form>
 </div>
 
 {% endblock %}
