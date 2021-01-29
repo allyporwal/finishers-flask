@@ -1,107 +1,143 @@
 {% extends "base.html" %} {% block content %}
 
-<p>
-    {% if current_user.is_authenticated %}
-        Hi {{ current_user.user_json.username }}!
-    {% endif %}
-
-</p>
-
-{% if current_user.is_admin == false %}
-
-    {% if current_user.library|length == 0 %}
-        <h4>Looks like you've starred no finishers</h4>
-        <p>
-            Click here to browse finishers created by other users
-        </p>
-    {% endif %}
-
-    {% if finishers|length == 0 %}
-        <h4>Looks like you're yet to create your first finisher</h4>
-        <p>
-            Click here to create a finisher
-        </p>
-    {% endif %}
-    
-{% endif %}    
-
-<div class="">
-        <div class="row authored-finishers">
-            <h5>Finishers by you</h5>
-            {% for finisher in finishers %}
-            <div class="col s12 m4">
-                <div class="card blue-grey darken-1">
-                    <div class="card-content white-text">
-                        <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}"><span class="card-title">{{ finisher.finisher_name }}</span></a>
-                        <div>
-                            {% for category in categories %}
-                                {% if finisher.category_name == category.category_name %}
-                                    <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i class="far fa-question-circle"> </i></a> {{ finisher.category_name }}: 
-                                {% endif %}
-                            {% endfor %}    
-                            <ol>
-                                {% for exercise in finisher.exercises %}
-                                <li>
-                                    {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
-                                </li>
-                                {% endfor %}
-                            </ol>
-                        </div>
-                        <div>
-                            {% if finisher.time_limit_toggle == "on" %}
-                                <span>Time limit: {{ finisher.time_limit }} minutes</span>
-                            {% endif %}   
-                        </div>
-                        <span>Instructions:</span>
-                        <p>{{ finisher.instructions }}</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a>
-                        <a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="row added-finishers">
-            <h5>Finishers you've starred</h5>
-            {% for added_finisher in added_finishers %}
-            <div class="col s12 m4">
-                <div class="card blue-grey darken-1">
-                    <div class="card-content white-text">
-                        <a href="{{ url_for('display_finisher', finisher_id=added_finisher._id) }}"><span class="card-title">{{ added_finisher.finisher_name }}</span></a>
-                        <div>
-                            {% for category in categories %}
-                                {% if added_finisher.category_name == category.category_name %}
-                                    <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i class="far fa-question-circle"> </i></a> {{ added_finisher.category_name }}: 
-                                {% endif %}
-                            {% endfor %}    
-                            <ol>
-                                {% for exercise in added_finisher.exercises %}
-                                <li>
-                                    {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
-                                </li>
-                                {% endfor %}
-                            </ol>
-                        </div>
-                        <div>
-                            {% if added_finisher.time_limit_toggle == "on" %}
-                                <span>Time limit: {{ added_finisher.time_limit }} minutes</span>
-                            {% endif %}   
-                        </div>
-                        <span>Instructions:</span>
-                        <p>{{ added_finisher.instructions }}</p>
-                        <span>Created by: {{ added_finisher.created_by }}</span>
-                    </div>
-                    <div class="card-action">
-                        <a href="{{ url_for('display_finisher', finisher_id=added_finisher._id) }}">Review</a>
-                        <a href="{{ url_for('remove_from_library', finisher_id=added_finisher._id) }}">Remove</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+<section id="greeting">
+    <div class="row">
+        <div class="col s12">
+            {% if current_user.is_authenticated %}
+            <h5>Hi, {{ current_user.user_json.username }}</h5>
+            {% endif %}
         </div>
     </div>
+</section>
+
+
+{% if finishers|length !=0 %}
+<section>
+    <div class="row">
+        <div class="row">
+            <div class="col s12">
+                <h6>Finishers by you:</h6>
+            </div>
+        </div>
+        {% for finisher in finishers %}
+        <div class="col s12 m4">
+            <div class="card white">
+                <div class="card-content orange-text text-darken-4">
+                    <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}"><span
+                            class="card-title">{{ finisher.finisher_name }}</span></a>
+                    <div>
+                        {% for category in categories %}
+                        {% if finisher.category_name == category.category_name %}
+                        <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i
+                                class="far fa-question-circle"> </i></a> {{ finisher.category_name }}:
+                        {% endif %}
+                        {% endfor %}
+                        <ol>
+                            {% for exercise in finisher.exercises %}
+                            <li>
+                                {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    <div>
+                        {% if finisher.time_limit_toggle == "on" %}
+                        <span>Time limit: {{ finisher.time_limit }} minutes</span>
+                        {% endif %}
+                    </div>
+                    <span>Instructions:</span>
+                    <p>{{ finisher.instructions }}</p>
+                </div>
+                <div class="card-action waves-effect waves-light">
+                    <div><a href="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">Edit</a></div>
+                    <div><a href="{{ url_for('delete_finisher', finisher_id=finisher._id)}}">Delete</a></div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if current_user.library|length != 0 %}
+    <div class="row">
+        <div class="row">
+            <div class="col s12">
+                <h6>Finishers you've starred:</h6>
+            </div>
+        </div>
+        {% for added_finisher in added_finishers %}
+        <div class="col s12 m4">
+            <div class="card white">
+                <div class="card-content orange-text text-darken-4">
+                    <a href="{{ url_for('display_finisher', finisher_id=added_finisher._id) }}"><span
+                            class="card-title">{{ added_finisher.finisher_name }}</span></a>
+                    <div>
+                        {% for category in categories %}
+                        {% if added_finisher.category_name == category.category_name %}
+                        <a class="tooltipped" data-position="bottom" data-tooltip="{{ category.description }}"><i
+                                class="far fa-question-circle"> </i></a> {{ added_finisher.category_name }}:
+                        {% endif %}
+                        {% endfor %}
+                        <ol>
+                            {% for exercise in added_finisher.exercises %}
+                            <li>
+                                {{ exercise.exercise_name }} for {{ exercise.set }} {{ exercise.set_type }}
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    <div>
+                        {% if added_finisher.time_limit_toggle == "on" %}
+                        <span>Time limit: {{ added_finisher.time_limit }} minutes</span>
+                        {% endif %}
+                    </div>
+                    <span>Instructions:</span>
+                    <p>{{ added_finisher.instructions }}</p>
+                    <span>Created by: {{ added_finisher.created_by }}</span>
+                </div>
+                <div class="card-action">
+                    <a href="{{ url_for('display_finisher', finisher_id=added_finisher._id) }}">Review</a>
+                    <a href="{{ url_for('remove_from_library', finisher_id=added_finisher._id) }}">Remove</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% if current_user.is_admin == false %}
+{% if finishers|length == 0 %}
+<div class="container">
+    <div class="row center-align">
+        <div class="col empty-library s12 m6">
+            <a href="{{ url_for('add_finisher') }}">
+                <div class="card-panel waves-effect waves-light">
+                    <h6>Looks like you're yet to create a finisher</h6>
+                    <p>
+                        Click to create a finisher
+                    </p>
+                </div>
+            </a>
+        </div>
+
+        {% endif %}
+        {% if current_user.library|length == 0 %}
+        <div class="row center-align">
+            <div class="col empty-library s12 m6">
+                <a href="{{ url_for('browse_finishers') }}">
+                    <div class="card-panel waves-effect waves-light">
+                        <h6>Looks like you've starred no finishers</h6>
+                        <p>
+                            Click to browse finishers created by other users
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
 
 {% endblock %}

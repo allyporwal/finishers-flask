@@ -27,13 +27,15 @@
 #callout-header {
     color: azure;
     font-weight: 200;
-    font-size: 3.8rem;
-    margin-top: 15vh;
+    font-size: 3rem;
+    margin-top: 12vh;
 }
 
 .callout-text {
     color: azure;
     font-weight: 100;
+    margin-top: 6vh;
+    margin-bottom: 6vh;
 }
 
 .navbar-logo {
@@ -44,16 +46,20 @@
     color: rgba(71, 75, 189, 1) !important;
 }
 
-/* misc */
+/* forms */
 
 .hidden_exercise {
     display: none;
 }
 
+/* misc */
+
 .tabs {
     display:-webkit-flex;
     display: -ms-flexbox;
-    display: flex
+    display: flex;
+    color: #e65100;
+    
 }
 
 .add-finisher-paragraph {
@@ -62,4 +68,74 @@
 
 #footer {
     height: 5vh;
+}
+
+.card {
+    border-radius: 20px;
+}
+
+.card .card-action:last-child {
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.card-title {
+    color: rgba(71, 75, 189, 1);
+}
+
+.card-action {
+    background-color: #e65100 !important;
+}
+
+.card .card-action a:not(.btn):not(.btn-large):not(.btn-small):not(.btn-large):not(.btn-floating) {
+    color: white;
+    margin-right: 24px;
+    -webkit-transition: color .3s ease;
+    transition: color .3s ease;
+    text-transform: uppercase;
+}
+
+#sign-up-button {
+    background-color: #e65100;
+    border-radius: 10px;
+}
+
+#tab-row { 
+    margin-top: 2vh;
+}
+
+/* Footer */
+
+#footer-row {
+    margin-bottom: 0;
+}
+
+.footer-links {
+    margin-bottom: 0;
+    color: rgba(71, 75, 189, 1);
+}
+
+.card-panel {
+    border-radius: 10px;
+    color: white;
+    background-color: rgba(41, 44, 121, 1) !important;
+}
+
+.fa-question-circle {
+    color: rgba(41, 44, 121, 1);
+}
+
+.row .empty-library {
+  float: none !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* media queries */
+
+@media only screen and (max-height: 568px) {
+
+    .callout-background {
+    height: 100vh;
+    }
 }

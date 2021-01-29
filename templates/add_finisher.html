@@ -1,11 +1,12 @@
 <title>Add Finisher | The Finisher</title>
 {% extends "base.html" %} {% block content %}
-<h1>Create finisher</h1>
 <br />
 
 <!-- Create finisher form -->
 
 <section>
+    <div class="container">
+        <h1>Create finisher</h1>
     <form method="POST" action="{{ url_for('add_finisher') }}">
         {{ form.csrf_token }}
         <div class="row">
@@ -100,5 +101,6 @@
         </div>
         <button type="submit" class="col s6 m4 btn-large">Add finisher</button>
     </form>
+    </div>
 </section>
 {% endblock %}
