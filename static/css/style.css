@@ -46,13 +46,29 @@
     color: rgba(71, 75, 189, 1) !important;
 }
 
+
+#rating {
+    color: rgba(71, 75, 189, 1);
+    margin-top: 2vh;
+    font-size: 1.3em;
+}
+
+#review-header {
+    color: rgba(71, 75, 189, 1);
+    margin-top: 0;
+}
+
+.form-header {
+    font-size: 3.5rem;
+}
+
 /* forms */
 
 .hidden_exercise {
     display: none;
 }
 
-/* misc */
+/* tabs */
 
 .tabs {
     display:-webkit-flex;
@@ -62,13 +78,25 @@
     
 }
 
+#tab-row { 
+    margin-top: 2vh;
+}
+
+/* margins and padding */
+
 .add-finisher-paragraph {
     padding: 0 .75rem;
+}
+
+.push-down {
+    margin-top: 5vh;
 }
 
 #footer {
     height: 5vh;
 }
+
+/* cards */
 
 .card {
     border-radius: 20px;
@@ -101,10 +129,6 @@
     border-radius: 10px;
 }
 
-#tab-row { 
-    margin-top: 2vh;
-}
-
 /* Footer */
 
 #footer-row {
@@ -115,6 +139,8 @@
     margin-bottom: 0;
     color: rgba(71, 75, 189, 1);
 }
+
+/* review and prompt cards */
 
 .card-panel {
     border-radius: 10px;
@@ -131,6 +157,20 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+
+/* action buttons */
+
+.orange-btn {
+    background-color: #e65100;
+    border-radius: 10px;
+}
+
+.orange-btn:hover {
+    background-color: #e48c59;
+    border-radius: 10px;
+}
+
 /* media queries */
 
 @media only screen and (max-height: 568px) {

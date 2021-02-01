@@ -1,0 +1,5 @@
+https://stackoverflow.com/questions/54992412/flask-login-usermixin-class-with-a-mongodb
+https://stackoverflow.com/questions/53401996/attributeerror-dict-object-has-no-attribute-is-active-pymongo-and-flask
+https://stackoverflow.com/questions/58160006/how-to-get-multiple-elements-from-a-form-using-request-form-get
+https://stackoverflow.com/questions/64822476/how-to-turn-2-d-list-into-a-list-of-dictionaries-in-python
+https://stackoverflow.com/questions/51009924/how-to-horizontally-align-column-in-materialize-css

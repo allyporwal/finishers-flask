@@ -6,7 +6,7 @@
 
 <section>
     <div class="container">
-        <h1>Create finisher</h1>
+        <h1 class="form-header">Create finisher</h1>
     <form method="POST" action="{{ url_for('add_finisher') }}">
         {{ form.csrf_token }}
         <div class="row">
@@ -99,7 +99,7 @@
                 <label for="time_limit">Time limit:</label>
             </div>
         </div>
-        <button type="submit" class="col s6 m4 btn-large">Add finisher</button>
+        <button type="submit" class="btn-large orange-btn">Add finisher</button>
     </form>
     </div>
 </section>

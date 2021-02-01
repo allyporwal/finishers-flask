@@ -6,7 +6,7 @@
 
 <section>
     <div class="container">
-        <h1>Edit {{ finisher.finisher_name }}</h1>
+        <h1 class="form-header">Edit {{ finisher.finisher_name }}</h1>
         <form method="POST" action="{{ url_for('modify_finisher', finisher_id=finisher._id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="row">
@@ -147,7 +147,7 @@
                     <label for="time_limit">Time limit:</label>
                 </div>
             </div>
-            <button type="submit" class="btn-large">Done</button>
+            <button type="submit" class="btn-large orange-btn">Done</button>
         </form>
     </div>
 </section>

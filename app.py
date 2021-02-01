@@ -31,7 +31,8 @@ mongo = PyMongo(app)
 
 
 class User(UserMixin):
-    """User class for flask_login"""
+    """User class for flask_login;
+    the attribution for this code is in the readme"""
 
     def __init__(self, user_json):
         self.user_json = user_json
@@ -201,7 +202,8 @@ def add_finisher():
             if key.startswith('set_type'):
                 form_input_nested[2].append(val)
         # sort form_input_nested into an array
-        # of objects using list comprehension
+        # of objects using list comprehension,
+        # attribution for this in readme
         exercises = [{'exercise_name': a,
                       'set': b,
                       'set_type': c
@@ -328,6 +330,7 @@ def add_to_library(finisher_id):
     """User can add a finisher to their library without editing"""
     finisher = mongo.db.finishers.find_one(
         {'_id': ObjectId(finisher_id)})['_id']
+
     mongo.db.users.update(
         {'username': current_user.username}, {'$push': {'library': finisher}})
 
@@ -379,7 +382,7 @@ def display_finisher(finisher_id):
     ratings = [int(i) for i in finisher['votes']]
 
     if len(ratings) != 0:
-        rating = sum(ratings)/len(ratings)
+        rating = int(sum(ratings)/len(ratings))
     else:
         rating = 0
 
@@ -437,7 +440,10 @@ def add_exercises():
             mongo.db.exercises.insert_one(exercise)
             return redirect(url_for('add_exercises'))
 
-    return render_template('add_exercises.html', form=form)
+    if current_user.is_admin:
+        return render_template('add_exercises.html', form=form)
+
+    return redirect(url_for("dashboard"))
 
 
 @app.route('/autofill', methods=['GET', 'POST'])

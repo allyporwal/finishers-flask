@@ -15,7 +15,7 @@
             <div class="row">
                 {% for finisher in finishers %}
                 <div class="col s12 m4">
-                    <div class="card white">
+                    <div class="card large white">
                         <div class="card-content orange-text text-darken-4">
                             <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}"><span
                                     class="card-title">{{ finisher.finisher_name }}</span></a>
@@ -69,7 +69,7 @@
                 {% for finisher in finishers %}
                 {% if finisher.category_name == category.category_name %}
                 <div class="col s12 m4">
-                    <div class="card white">
+                    <div class="card large white">
                         <div class="card-content orange-text text-darken-4">
                             <a href="{{ url_for('display_finisher', finisher_id=finisher._id) }}"><span
                                     class="card-title">{{ finisher.finisher_name }}</span></a>
