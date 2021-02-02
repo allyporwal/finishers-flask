@@ -1,7 +1,9 @@
 let exercises;
 
 // fetches data from exercises collection in MongoDB in JSON 
-// format and loads to the autofill fields
+// format and loads to the autofill fields - attribution in 
+// README
+
 fetch('/autofill')
   .then(response => response.json())
   .then(data => exercises = data)
@@ -17,9 +19,12 @@ fetch('/autofill')
 
 $(document).ready(function () {
     $('.sidenav').sidenav();
-    $("select").formSelect();
+    $('select').formSelect();
     $('.tooltipped').tooltip();
     $('.tabs').tabs();
+    $('#flashed-messages').fadeIn('slow', function(){
+               $('#flashed-messages').delay(5000).fadeOut(); 
+        });
 });
 
 // Dynamic field loading on create finisher function

@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
     {% block styles %}
     {% endblock %}
-    <title>The Finisher</title>
+    <title> {% block title %}Welcome | Finishers{% endblock %}</title>
+    
 </head>
 
 <body>
@@ -62,8 +63,10 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
-                <div class="row flashes">
-                    <h4 class="lighten-4 center-align">{{ message }}</h4>
+                <div id="flashed-messages" class="row center-align center-block flashes">
+                    <div class="col s12 m6 offset-m3 card-panel">
+                        <h4 class="lighten-4">{{ message }}</h4>
+                    </div>
                 </div>
                 {% endfor %}
             {% endif %}
