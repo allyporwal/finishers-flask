@@ -62,6 +62,10 @@
     font-size: 3.5rem;
 }
 
+#search-exercises-label {
+    color: white;
+}
+
 /* forms */
 
 .hidden_exercise {
@@ -89,7 +93,7 @@
 }
 
 .push-down {
-    margin-top: 5vh;
+    margin-top: 3.5vh;
 }
 
 #footer {
@@ -170,6 +174,7 @@
     background-color: #e48c59;
     border-radius: 10px;
 }
+
 
 /* media queries */
 

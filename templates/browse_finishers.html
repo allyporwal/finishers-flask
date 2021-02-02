@@ -1,6 +1,30 @@
 <title>Browse | The Finisher</title>
 {% extends "base.html" %}
 {% block content %}
+<section class="container">
+    <div class="row push-down center-block">
+        <div class="col card-panel s12 m8 offset-m2">
+            <form action="{{ url_for('search') }}" method="POST">
+                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="input-field col s12 m6">
+                    <input type="text" name="search-exercises" required>
+                    <label id="search-exercises-label" for="search-exercises">Search by exercise</label>
+                </div>
+                <div class="input-field col s12 m6 center-align">
+                    <a href="{{ url_for('browse_finishers') }}"></a>
+                    <button type="submit" class="btn-large orange-btn">
+                        Search
+                    </button>
+                </div>
+            </form>
+            <p class="center-align">
+                Or use the tabs below to browse by category.
+            </p>
+        </div>          
+    
+    </div>
+</section>
+
 <section>
     <div class="row" id="tab-row">
         <div class="col s12">

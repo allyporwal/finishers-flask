@@ -176,13 +176,9 @@ def dashboard():
         {'_id': {'$in': current_user.library}})
     categories = list(mongo.db.categories.find())
 
-    if current_user.is_authenticated:
-        return render_template(
-            'dashboard.html',
-            finishers=finishers, categories=categories,
-            added_finishers=added_finishers)
-
-    return redirect(url_for('login'))
+    return render_template('dashboard.html', finishers=finishers,
+                           categories=categories,
+                           added_finishers=added_finishers)
 
 
 @app.route('/add_finisher', methods=['GET', 'POST'])
@@ -332,7 +328,8 @@ def add_to_library(finisher_id):
         {'_id': ObjectId(finisher_id)})['_id']
 
     mongo.db.users.update(
-        {'username': current_user.username}, {'$push': {'library': finisher}})
+        {'username': current_user.username},
+        {'$addToSet': {'library': finisher}})
 
     flash('Finisher added to library')
     return redirect(url_for('dashboard'))
@@ -409,6 +406,18 @@ def display_finisher(finisher_id):
 def browse_finishers():
     """browse view so user can see all finishers posted by everyone"""
     finishers = list(mongo.db.finishers.find())
+    categories = list(mongo.db.categories.find())
+
+    return render_template(
+        'browse_finishers.html', finishers=finishers, categories=categories)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    """browse view so user can see all finishers posted by everyone"""
+    query = request.form.get('search-exercises')
+    finishers = list(mongo.db.finishers.find({'$text': {'$search': query}}))
     categories = list(mongo.db.categories.find())
 
     return render_template(
