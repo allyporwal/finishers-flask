@@ -194,8 +194,9 @@ Below is a table that details the key defensive design tests performed on the ap
 | Protection of links in navbar | The user should only be able to see a link to register or login if they are not logged in | Passed |
 | Protection of all views | If a user is not logged in, an attempt to access a protected view should redirect them to the login page and flash a message prompting them to login | Passed |
 | Protection of admin specific view, link and functionality | If a non-admin user attempts to access the view and function that allows the admin user to add exercises to the database, they should be redirected back to their dashboard if logged in, or redirected to the login page if not logged in. Non-admin users cannot see the link to the protected view | Passed |
-| Deleted finishers cannot be accessed or throw errors | If a user tries to go to the url containing the ID of a deleted finisher, a 404 error should be returned | Passed |
+| Deleted finishers cannot be accessed | If a user tries to go to a url containing the ID of a deleted finisher, a 404 error should be returned | Passed |
 | Users can only delete finishers that they have authored | Any attempt by a user to delete a finisher that they have not authored will result in a redirect to the dashboard and a flashed message informing them that they cannot delete that finisher | Passed |
+
 
 
 
