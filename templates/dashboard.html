@@ -2,23 +2,23 @@
 {% block title %} Dashboard | Finishers {% endblock %}
 {% block content %}
 
-<section id="greeting">
+<section id="greeting" class="push-in">
     <div class="row">
         <div class="col s12">
             {% if current_user.is_authenticated %}
-            <h5>Hi, {{ current_user.user_json.username }}</h5>
+            <h5 class="blue-header">Hi, {{ current_user.user_json.username }}</h5>
             {% endif %}
         </div>
     </div>
 </section>
 
-
+<section class="push-in">
 {% if finishers|length !=0 %}
-<section>
+
     <div class="row">
         <div class="row">
             <div class="col s12">
-                <h6>Finishers by you:</h6>
+                <h6 class="blue-header">Finishers by you:</h6>
             </div>
         </div>
         {% for finisher in finishers %}
@@ -64,7 +64,7 @@
     <div class="row">
         <div class="row">
             <div class="col s12">
-                <h6>Finishers you've starred:</h6>
+                <h6 class="blue-header">Finishers you've starred:</h6>
             </div>
         </div>
         {% for added_finisher in added_finishers %}
@@ -105,41 +105,40 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 </section>
-{% endif %}
+
 
 {% if current_user.is_admin == false %}
-{% if finishers|length == 0 %}
-<div class="container">
-    <div class="row center-align">
-        <div class="col empty-library s12 m6">
-            <a href="{{ url_for('add_finisher') }}">
-                <div class="card-panel waves-effect waves-light">
-                    <h6>Looks like you're yet to create a finisher</h6>
-                    <p>
-                        Click to create a finisher
-                    </p>
+    {% if finishers|length == 0 %}
+            <div class="row center-align">
+                <div class="col empty-library s12 m6">
+                    <a href="{{ url_for('add_finisher') }}">
+                        <div class="card-panel waves-effect waves-light">
+                            <h6>Looks like you're yet to create a finisher</h6>
+                            <p>
+                                Click to create a finisher
+                            </p>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-
-        {% endif %}
-        {% if current_user.library|length == 0 %}
-        <div class="row center-align">
-            <div class="col empty-library s12 m6">
-                <a href="{{ url_for('browse_finishers') }}">
-                    <div class="card-panel waves-effect waves-light">
-                        <h6>Looks like you've starred no finishers</h6>
-                        <p>
-                            Click to browse finishers created by other users
-                        </p>
-                    </div>
-                </a>
             </div>
-        </div>
-    </div>
-</div>
-{% endif %}
+
+                {% endif %}
+                {% if current_user.library|length == 0 %}
+                <div class="row center-align">
+                    <div class="col empty-library s12 m6">
+                        <a href="{{ url_for('browse_finishers') }}">
+                            <div class="card-panel waves-effect waves-light">
+                                <h6>Looks like you've starred no finishers</h6>
+                                <p>
+                                    Click to browse finishers created by other users
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+        {% endif %}
 {% endif %}
 
 {% endblock %}

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block title %} Browse finishers | Finishers {% endblock %}
 {% block content %}
-<section class="container">
+<div class="container">
     <div class="row push-down center-block">
         <div class="col card-panel s12 m8 offset-m2">
             <form action="{{ url_for('search') }}" method="POST">
                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="input-field col s12 m6">
-                    <input type="text" name="search-exercises" required>
+                    <input type="text" name="search-exercises" id="search-exercises" required>
                     <label id="search-exercises-label" for="search-exercises">Search by exercise</label>
                 </div>
                 <div class="input-field col s12 m6 center-align">
@@ -20,12 +20,12 @@
             <p class="center-align">
                 Or use the tabs below to browse by category.
             </p>
-        </div>          
-    
+        </div>    
     </div>
-</section>
+</div>
 
-<section>
+<section class="push-in">
+    <h4 class="center-align blue-header">Browse Finishers</h4>
     <div class="row" id="tab-row">
         <div class="col s12">
             <ul class="tabs">
@@ -36,7 +36,6 @@
             </ul>
         </div>
         <div id="All" class="col s12">
-            <div class="row">
                 {% for finisher in finishers %}
                 <div class="col s12 m4">
                     <div class="card large white">
@@ -138,7 +137,6 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
     {% endfor %}
 </section>
 

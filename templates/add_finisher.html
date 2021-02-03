@@ -16,61 +16,61 @@
                 <label for="finisher_name">Name finisher:</label>
             </div>
             <div class="input-field col s6">
-                <select name="categories" required>
-                    <option value="" disabled selected></option>
+                <select id="categories" name="categories" required>
+                    <option value="" disabled selected>select</option>
                     {% for category in categories %}
                     <option value="{{ category.category_name }}">
                         {{ category.category_name }}
                     </option>
                     {% endfor %}
                 </select>
-                <label for="">Select category</label>
+                <label for="categories">Select category</label>
             </div>
         </div>
 
         <!-- Exercise 1 -->
 
-        <div class="row">
+        <div class="row exercise-row">
             <p class="add-finisher-paragraph">Add up to 10 exercises below:</p>
             <div class="input-field col m6 s12">
                 {{ form.exercise(size=20, class="autocomplete validate") }}
-                <label for="exercise_1">Exercise 1:</label>
+                <label for="exercise">Exercise 1:</label>
             </div>
             <div class="input-field col m3 s6">
                 {{ form.reps(size=20, class="validate") }}
-                <label for="reps_1">for:</label>
+                <label for="reps">for:</label>
             </div>
             <div class="input-field col m3 s6">
                 <select id="exercise_set_type_select_1" name="set_type_1">
-                    <option value="" disabled selected></option>
+                    <option value="" disabled selected>select</option>
                     <option value="reps">reps</option>
                     <option value="seconds">seconds</option>
                     <option value="metres">metres</option>
                 </select>
-                <label for="set_type_1">Reps/time/distance:</label>
+                <label for="exercise_set_type_select_1">Reps/time/distance:</label>
             </div>
         </div>
 
         <!-- Next 9 exercise rows -->
 
         {% for x in range(2, 11, 1) %}
-            <div id="exercise_{{ x }}" class="row hidden_exercise">
+            <div id="exercise_{{ x }}" class="row exercise-row hidden_exercise">
                 <div class="input-field col m6 s12">
-                    <input name="exercise_{{ x }}" type="text" class="validate autocomplete" />
-                    <label for="exercise">Exercise {{ x }}:</label>
+                    <input id="exercise_name_{{ x }}" name="exercise_{{ x }}" type="text" class="validate autocomplete" />
+                    <label for="exercise_name_{{ x }}">Exercise {{ x }}:</label>
                 </div>
                 <div class="input-field col m3 s6">
-                    <input name="reps_{{ x }}" type="number" class="validate" />
+                    <input id="reps_{{ x }}" name="reps_{{ x }}" type="number" class="validate" />
                     <label for="reps_{{ x }}">for:</label>
                 </div>
                 <div class="input-field col m3 s6">
                     <select id="exercise_set_type_select_{{ x }}" name="set_type_{{ x }}">
-                        <option value="" disabled selected></option>
+                        <option value="" disabled selected>select</option>
                         <option value="reps">reps</option>
                         <option value="seconds">seconds</option>
                         <option value="metres">metres</option>
                     </select>
-                    <label for="set_type_{{ x }}">Reps/time/distance:</label>
+                    <label for="exercise_set_type_select_{{ x }}">Reps/time/distance:</label>
                 </div>
             </div>
         {% endfor %}

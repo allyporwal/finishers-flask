@@ -46,7 +46,6 @@
     color: rgba(71, 75, 189, 1) !important;
 }
 
-
 #rating {
     color: rgba(71, 75, 189, 1);
     margin-top: 2vh;
@@ -64,6 +63,10 @@
 
 #search-exercises-label {
     color: white;
+}
+
+.blue-header {
+    color: rgba(41, 44, 121, 1);
 }
 
 /* forms */
@@ -98,6 +101,11 @@
 
 #footer {
     height: 5vh;
+}
+
+.push-in {
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 /* cards */
@@ -142,6 +150,10 @@
 .footer-links {
     margin-bottom: 0;
     color: rgba(71, 75, 189, 1);
+}
+
+.page-footer {
+    margin-top: 3.5vh;
 }
 
 /* review and prompt cards */
