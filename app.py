@@ -47,7 +47,8 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    """login manager returns a user object and ID to login a user"""
+    """login manager returns a user object and ID to login a user;
+    the attribution for this code is in the readme"""
     user_obj = mongo.db.users.find_one({'_id': ObjectId(user_id)})
     return User(user_obj)
 

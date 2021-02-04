@@ -81,8 +81,7 @@
     display:-webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    color: #e65100;
-    
+    color: #e65100;    
 }
 
 #tab-row { 
@@ -199,7 +198,7 @@
 
 /* lock to portait on mobile */
 
-@media screen and (min-width: 320px) and (max-width: 812px) and (orientation: landscape) {
+@media screen and (min-width: 320px) and (max-width: 811px) and (orientation: landscape) {
   html {
     transform: rotate(-90deg);
     transform-origin: left top;
