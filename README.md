@@ -199,6 +199,24 @@ Below is a table that details the key defensive design tests performed on the ap
 
 All HTML and CSS was validated on the [W3C Markup Validation service](https://validator.w3.org/). All Python code was checked for syntax on [ExtendsClass](https://extendsclass.com/python-tester.html). javascript code was tested on [Esprima](https://esprima.org/demo/validate.html). No errors were shown in the HTML, CSS, JS or Python code.
 
+The app has been tested on a variety of different devices and browsers.
+
+1. iPhone XR
+
+    - The app was tested on Safari, Firefox and Chrome and perfomed as intended in both vertical and horizontal orientations
+
+iPad Pro
+
+The website was tested on Safari and performed as intended in both orientations
+Acer Laptop with touchscreen
+
+The website was tested on Firefox and Chrome and performed as intended in both touchscreen and normal mode
+21.5 inch iMac with 1080p display
+
+The website performed as intended on Chrome and Safari
+iPhone 5, 6/7/8, 6/7/8 plus, iPad, various android phones, laptops and a 4K monitor were all simulated in Chrome Developer Tools to check for responsiveness
+
+All performed as intended
 
 
 
