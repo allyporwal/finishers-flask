@@ -35,6 +35,8 @@ $('[id^=exercise_set_type_select_]').on('change', function() {
     $(this).parent().parent().parent().next('.exercise-row').show('slow');
 })
 
-$('li[id^="select-options"]').on('touchend', function (e) {
-    e.stopPropagation();
-}); 
+$(document).click(function(){
+    $('li[id^="select-options"]').on('touchend', function (e) {
+        e.stopPropagation();
+    });
+});
