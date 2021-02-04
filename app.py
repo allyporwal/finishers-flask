@@ -245,7 +245,8 @@ def add_finisher():
 @login_required
 def edit_finisher(finisher_id):
     """Allow a user to edit a finisher and then add to their library,
-    creates a new finisher that is a modified version of an existing one"""
+    creates a new finisher that is a modified version of an existing one.
+    This is the view seen when a user clicks Clone"""
     finisher = mongo.db.finishers.find_one_or_404(
         {'_id': ObjectId(finisher_id)})
     categories = mongo.db.categories.find()
@@ -515,4 +516,4 @@ def error_404(e):
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
             port=int(os.environ.get('PORT')),
-            debug=True)
+            debug=False)

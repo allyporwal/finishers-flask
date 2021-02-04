@@ -42,9 +42,17 @@ The app has a simple structure with only a few views. The design is intended to 
 
 The app was designed in Balsamiq, a few of the views are shown below:
 
-1. Dashboard ![Dashboard on desktop](/wireframes/home-desktop.jpg) ![Dashboard on Mobile](/wireframes/home-mobile.jpg) 
-2. Browse page ![Browse on desktop](/wireframes/browse-desktop.jpg) ![Browse on mobile](/wireframes/browse-mobile.jpg)
-3. Create page ![Create on desktop](/wireframes/create-desktop.jpg) ![Create on mobile](/wireframes/create-mobile.jpg)
+1. Dashboard 
+
+![Dashboard on desktop](/wireframes/home-desktop.jpg) ![Dashboard on Mobile](/wireframes/home-mobile.jpg)
+
+2. Browse page 
+
+![Browse on desktop](/wireframes/browse-desktop.jpg) ![Browse on mobile](/wireframes/browse-mobile.jpg)
+
+3. Create page 
+
+![Create on desktop](/wireframes/create-desktop.jpg) ![Create on mobile](/wireframes/create-mobile.jpg)
 
 ### Surface
 
@@ -58,7 +66,7 @@ A bright colour scheme gives some visual interest to the simple design, and Mate
 2. Users can create finishers, update and duplicate finishers, delete their own finishers and browse a user-generated library
 3. Users can review finishers and up or downvote them. The votes and reviews are displayed on the individual finisher page
 4. Admin user can add exercises to the exercise collection in the MongoDB database, which is used to autocomplete fields on the add finisher form
-5. Users can star finishers by other users. These then appear on a user's dashboard and can be removed from their library
+5. Users can star finishers by other users. These then appear on a user's dashboard and can also be removed from their dashboard
 6. Finishers can be browsed by category or searched for by exercise name
 
 ## Future Features
@@ -69,6 +77,7 @@ A bright colour scheme gives some visual interest to the simple design, and Mate
 4. Incorporation of images to help add visual interest
 5. The admin user cannot currently delete exercises or finishers from the database, this will be updated in the future to give them more control
 6. Further tweaks to some of the functionality - for example, when a user clones a finisher it will, in future, also show the original in a link
+7. Proper performance of all aspects of the app in horizonal orientation on mobile devices
 
 <hr>
 
@@ -199,11 +208,11 @@ Below is a table that details the key defensive design tests performed on the ap
 
 All HTML and CSS was validated on the [W3C Markup Validation service](https://validator.w3.org/). All Python code was checked for syntax on [ExtendsClass](https://extendsclass.com/python-tester.html). javascript code was tested on [Esprima](https://esprima.org/demo/validate.html). No errors were shown in the HTML, CSS, JS or Python code.
 
-The app has been tested on a variety of different devices and browsers.
+The app has been tested on a variety of different devices and browsers. One currently unfixable problem, however, is that I haven't been able to find a solution that locks the website in vertical orientation on mobile devices. It doesn't work properly or look good currently in horizontal orientation - this will be addressed in future updates
 
 1. iPhone XR
 
-    - The app was tested on Safari, Firefox and Chrome and perfomed as intended in both vertical and horizontal orientations in every respect except the dropdown menus not working correctly. This is an issue with Materialize, so the browser default is enabled until there is a fix (the potential workaround was big and messy)
+    - The app was tested on Safari, Firefox and Chrome and perfomed as intended vertical orientation. 
 
 2. iPad Pro
 
@@ -215,7 +224,7 @@ The app has been tested on a variety of different devices and browsers.
 
 4. iPhone 5, 6/7/8, 6/7/8 plus, iPad, various android phones, laptops and a 4K monitor were all simulated in Chrome Developer Tools to check for responsiveness
 
-    - All performed as intended
+    - All performed as intended; with simlutated mobile devices working well in vertical orientation
 
 <hr>
 
@@ -255,17 +264,6 @@ os.environ.setdefault("SECRET_KEY", "**YOUR SECRET KEY HERE**")
 os.environ.setdefault("MONGO_URI", "**YOUR MONGODB URI HERE**")
 os.environ.setdefault("MONGO_DBNAME", "**YOUR MONGODB DATABASE NAME HERE**")
 ```
-
-You must also ensure that you have all the necessary modules installed in your IDE. This project relies heavily on third party modules for key functionality, and they are all listed below:
-
-1. [Flask](https://flask.palletsprojects.com/en/1.1.x/) is the micro framework the project relies heavily upon - in the terminal use: ```$ pip3 install Flask```
-2. [Flask-WTF](https://flask-wtf.readthedocs.io/en/stable/index.html) integrates Flask and WTForms - in the terminal use: ```$ pip3 install Flask-WTF```
-3. [WTForms](https://wtforms.readthedocs.io/en/2.3.x/) is used in most forms for backend validation - in the terminal use: ```$ pip3 install WTForms```
-4. [Flask-Login](https://flask-login.readthedocs.io/en/latest/) is used to manage loggin in and out and to protect views and functions - in the terminal use: ```$ pip3 install flask-login```
-5. [Flask-PyMongo](https://flask-pymongo.readthedocs.io/en/latest/) is to integrate Flask and MongoDB - in the terminal use: ```$ pip3 install Flask-PyMongo```
-6. [dnspython](https://pypi.org/project/dnspython/) is to enable usage of MongoDB connection string - in the terminal use: ```$ pip3 install dnspython```
-7. [Werkzeug](https://werkzeug.palletsprojects.com/en/1.0.x/utils/) is used to debug during development and to generate hashed passwords - it comes as part of Flask so no extra installation commands are necessary
-
 Your MongoDB databse must be correctly configured as well:
 
 1. Within your cluster, navigate to the "Collections" tab
@@ -281,6 +279,16 @@ Your MongoDB databse must be correctly configured as well:
 11. Input your database name in the ```"MONGO_DBNAME"``` section
 
 Your app should now be deployed on Heroku and talking to MongoDB correctly.
+
+You must also ensure that you have all the necessary modules installed in your IDE. This project relies heavily on third party modules for key functionality, and they are all listed below:
+
+1. [Flask](https://flask.palletsprojects.com/en/1.1.x/) is the micro framework the project relies heavily upon - in the terminal use: ```$ pip3 install Flask```
+2. [Flask-WTF](https://flask-wtf.readthedocs.io/en/stable/index.html) integrates Flask and WTForms - in the terminal use: ```$ pip3 install Flask-WTF```
+3. [WTForms](https://wtforms.readthedocs.io/en/2.3.x/) is used in most forms for backend validation - in the terminal use: ```$ pip3 install WTForms```
+4. [Flask-Login](https://flask-login.readthedocs.io/en/latest/) is used to manage loggin in and out and to protect views and functions - in the terminal use: ```$ pip3 install flask-login```
+5. [Flask-PyMongo](https://flask-pymongo.readthedocs.io/en/latest/) is to integrate Flask and MongoDB - in the terminal use: ```$ pip3 install Flask-PyMongo```
+6. [dnspython](https://pypi.org/project/dnspython/) is to enable usage of MongoDB connection string - in the terminal use: ```$ pip3 install dnspython```
+7. [Werkzeug](https://werkzeug.palletsprojects.com/en/1.0.x/utils/) is used to debug during development and to generate hashed passwords - it comes as part of Flask so no extra installation commands are necessary
 
 <hr>
 
@@ -309,8 +317,8 @@ Several developers far more talented and experienced than I were vital in helpin
 - [Pretty Printed](https://www.youtube.com/channel/UC-QDfvrRIDB6F0bIO4I4HkQ) on Youtube was instrumental in helping me understand backend form validation
 - User Furas detailed how to get all data from a form with similar name fields in [this thread](https://stackoverflow.com/questions/58160006/how-to-get-multiple-elements-from-a-form-using-request-form-get) on Stack Overflow
 - Materialize tabs weren't working correctly, they weren't displaying more than 4 in a row. [This answer](https://stackoverflow.com/questions/45153376/materializecss-tabs-not-displaying-more-than-4-tabs) on Stack Overflow from user Saurabh Yadav fixed the issue
-- The CSS code that prevents horizontal orientation on smartphones and all sorts of goofy problems that go with that can be (found here)[https://premium.wpmudev.org/forums/topic/disable-landscape-mode-on-mobile/]
-- [Andrew Healey's](https://healeycodes.com/javascript/python/beginners/webdev/2019/04/11/talking-between-languages.html) work helped me get the Materialize 
+- [Andrew Healey's](https://healeycodes.com/javascript/python/beginners/webdev/2019/04/11/talking-between-languages.html) work helped me get the Materialize autocomplete working with data from MongoDB and Python
+- Materialize Select doesn't work on iOS - [this fix](https://stackoverflow.com/questions/52850091/materialize-select-and-dropdown-touch-event-selecting-wrong-item) by user Akintomiwa Opemipo solved the bug 
 
 Big thank you to my Code Institute mentor, Brian Macharia, for his help in getting this project done. His ability to break anything I build in less than 10 seconds has really helped me learn. Thanks, Brian.
 

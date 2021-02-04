@@ -186,7 +186,6 @@
     border-radius: 10px;
 }
 
-
 /* media queries */
 
 @media only screen and (max-height: 568px) {
@@ -194,18 +193,4 @@
     .callout-background {
     height: 100vh;
     }
-}
-
-/* lock to portait on mobile */
-
-@media screen and (min-width: 320px) and (max-width: 811px) and (orientation: landscape) {
-  html {
-    transform: rotate(-90deg);
-    transform-origin: left top;
-    width: 100vh;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
-  }
 }
