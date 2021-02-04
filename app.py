@@ -52,7 +52,7 @@ def load_user(user_id):
     return User(user_obj)
 
 
-class registrationForm(FlaskForm):
+class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired(), Length(
         min=5, max=20, message='Must be between 5 and 20 characters long'),
         Regexp('^[a-zA-Z0-9_]*$',
@@ -65,7 +65,7 @@ class registrationForm(FlaskForm):
         'password', message='Passwords must match')])
 
 
-class loginForm(FlaskForm):
+class LoginForm(FlaskForm):
     username = StringField('username', validators=[InputRequired(), Length(
         min=5, max=20, message='Must be between 5 and 20 characters long'),
         Regexp('^[a-zA-Z0-9_]*$',
@@ -76,23 +76,30 @@ class loginForm(FlaskForm):
                message='Please use letters and/or numbers only')])
 
 
-class reviewForm(FlaskForm):
-    review = TextAreaField('review', validators=[InputRequired()])
+class ReviewForm(FlaskForm):
+    review = TextAreaField('review', validators=[InputRequired(), Length(
+        min=4, max=200, message='Must be between 4 and 200 characters long')])
 
 
-class addExercise(FlaskForm):
+class AddExercise(FlaskForm):
     exercise_name = StringField(
         'Exercise name:', validators=[InputRequired(), Length(
             min=3, max=50,
             message='Must be between 5 and 50 characters long')])
 
 
-class addFinisherForm(FlaskForm):
+class AddFinisherForm(FlaskForm):
     finisher_name = StringField(
-        'Name your finisher:', validators=[InputRequired()])
+        'Name your finisher:', validators=[InputRequired(), Length(
+            min=4, max=50,
+            message='Must be between 4 and 50 characters long')])
     exercise = StringField('Exercise:', validators=[InputRequired()])
     reps = IntegerField('Reps:', validators=[InputRequired()])
-    instructions = StringField('Exercise:', validators=[InputRequired()])
+    instructions = StringField('Instructions:',
+                               validators=[InputRequired(), Length(
+                                   min=4, max=200,
+                                   message='Must be between 4'
+                                   'and 200 characters long')])
 
 
 @app.route('/')
@@ -106,9 +113,11 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
 
-    form = registrationForm()
+    form = RegistrationForm()
     if form.validate_on_submit():
 
+        # search database to see if username taken
+        # redirect if taken, input new user if not
         username_taken = mongo.db.users.find_one(
             {'username': form.username.data.lower()})
 
@@ -123,6 +132,8 @@ def register():
             'is_admin': False
         }
 
+        # insert new user and then use it as an instance
+        # of User class to allow login using Flask-Login
         mongo.db.users.insert_one(new_user)
         username_exists = mongo.db.users.find_one(
             {'username': form.username.data.lower()})
@@ -140,7 +151,7 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
 
-    form = loginForm()
+    form = LoginForm()
 
     if form.validate_on_submit():
         username_exists = mongo.db.users.find_one(
@@ -172,10 +183,12 @@ def dashboard():
     """Display the user's dashboard"""
     finishers = list(
         mongo.db.finishers.find({'created_by': current_user.username}))
+    # pull _id array values and use to search database for starred finishers
     added_finishers = mongo.db.finishers.find(
         {'_id': {'$in': current_user.library}})
     categories = list(mongo.db.categories.find())
 
+    # view is protected courtesy of Flask-Login @login_required decorator
     return render_template('dashboard.html', finishers=finishers,
                            categories=categories,
                            added_finishers=added_finishers)
@@ -186,10 +199,11 @@ def dashboard():
 def add_finisher():
     """Function allowing a logged in user to add a finisher to the database"""
     categories = mongo.db.categories.find()
-    form = addFinisherForm()
+    form = AddFinisherForm()
 
     if request.method == 'POST':
         form_input_nested = [[], [], []]
+        # grab values from all exercise, reps and set_type form fields
         for key, val in request.form.items():
             if key.startswith('exercise'):
                 form_input_nested[0].append(val)
@@ -219,6 +233,7 @@ def add_finisher():
         }
 
         mongo.db.finishers.insert_one(finisher)
+        flash('New finisher added to database')
         return redirect(url_for('dashboard'))
 
     return render_template(
@@ -267,6 +282,8 @@ def edit_finisher(finisher_id):
             flash('Please give a new name to the edited finisher')
         else:
             mongo.db.finishers.insert_one(edited_finisher)
+            flash(f'New finisher based on {finisher["finisher_name"]}'
+                  ' added to database')
             return redirect(url_for(
                 'dashboard'))
 
@@ -314,6 +331,7 @@ def modify_finisher(finisher_id):
 
         mongo.db.finishers.update(
             {'_id': ObjectId(finisher_id)}, modified_finisher)
+        flash(f'{finisher["finisher_name"]} successfully edited')
         return redirect(url_for('dashboard'))
 
     return render_template(
@@ -362,6 +380,8 @@ def delete_finisher(finisher_id):
         flash('Finisher deleted')
         return redirect(url_for('dashboard'))
 
+    # reroutes a user in unlikely event of them attempting
+    # deletion of a finisher that they didn't author
     else:
         flash('You can only delete finishers you have created')
         return redirect(url_for('dashboard'))
@@ -371,13 +391,17 @@ def delete_finisher(finisher_id):
 @login_required
 def display_finisher(finisher_id):
     """Shows an individual finisher and allows a user to review it"""
-    form = reviewForm()
+    form = ReviewForm()
     finisher = mongo.db.finishers.find_one_or_404(
         {'_id': ObjectId(finisher_id)})
     categories = list(mongo.db.categories.find())
     reviews = list(finisher['reviews'])
     ratings = [int(i) for i in finisher['votes']]
 
+    # if there are votes, the upvotes are a value of 100 and the
+    # downvotes are a value of 0. This gives an average score to
+    # display on the individual finisher view. If no votes, the
+    # rating is 0 to prevent an error being thrown
     if len(ratings) != 0:
         rating = int(sum(ratings)/len(ratings))
     else:
@@ -428,12 +452,14 @@ def search():
 @login_required
 def add_exercises():
     """page for admin user to add new exercises to database"""
-    form = addExercise()
+    form = AddExercise()
 
+    # check if current user has admin status
     if current_user.is_admin:
 
         if form.validate_on_submit():
 
+            # search database to see if exercise is already in there
             exercise_exists = mongo.db.exercises.find_one(
                 {form.exercise_name.data: {'$exists': True}})
 
@@ -441,6 +467,8 @@ def add_exercises():
                 flash('Exercise already in database')
                 return redirect(url_for('add_exercises'))
 
+            # add to database in format expected
+            # by Materialize CSS autocomplete field
             exercise = {
                 form.exercise_name.data: None
             }

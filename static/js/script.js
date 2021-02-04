@@ -16,7 +16,7 @@ fetch('/autofill')
         });
     })
 
-
+    
 // Load all other Materialize components and fade Flash messages out
 
 $(document).ready(function () {

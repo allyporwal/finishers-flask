@@ -6,7 +6,7 @@
 
 Welcome to Finishers. 
 
-This is a web app that contains user-generated workouts or "Finishers", which are intended to be used at the end of a training session to finish off a trainee.
+This is a web app that contains user-generated workouts or "Finishers", which are intended to be used at the end of a training session to really push a trainee.
 
 The app was delopyed using Heroku and can be found here: [Finishers](https://the-finisher.herokuapp.com).
 
@@ -42,10 +42,9 @@ The app has a simple structure with only a few views. The design is intended to 
 
 The app was designed in Balsamiq, a few of the views are shown below:
 
-1. Dashboard
-2. Browse page
-3. Create page
-4. Individual finisher page
+1. Dashboard ![Dashboard on desktop](/wireframes/home-desktop.jpg) ![Dashboard on Mobile](/wireframes/home-mobile.jpg) 
+2. Browse page ![Browse on desktop](/wireframes/browse-desktop.jpg) ![Browse on mobile](/wireframes/browse-mobile.jpg)
+3. Create page ![Create on desktop](/wireframes/create-desktop.jpg) ![Create on mobile](/wireframes/create-mobile.jpg)
 
 ### Surface
 
@@ -69,6 +68,7 @@ A bright colour scheme gives some visual interest to the simple design, and Mate
 3. Further functionality for user profiles, such as being able to update passwords 
 4. Incorporation of images to help add visual interest
 5. The admin user cannot currently delete exercises or finishers from the database, this will be updated in the future to give them more control
+6. Further tweaks to some of the functionality - for example, when a user clones a finisher it will, in future, also show the original in a link
 
 <hr>
 
@@ -105,7 +105,7 @@ The **exercises** collection data structure is as follows:
 }
 ```
 
-This very simple struture is dictated by the data structure that Materialize autocomplete fields expect. The null value could be linked to a thumbnail image of the exercise being selected, but left as null means there is no image linked on the frontend.
+This very simple struture is dictated by the data structure that Materialize autocomplete fields expect. The null value could be a link to a thumbnail image of the exercise being selected, but left as null means there is no image linked on the frontend.
 
 Here is the structure for the **categories** collection:
 
@@ -196,6 +196,8 @@ Below is a table that details the key defensive design tests performed on the ap
 | Protection of admin specific view, link and functionality | If a non-admin user attempts to access the view and function that allows the admin user to add exercises to the database, they should be redirected back to their dashboard if logged in, or redirected to the login page if not logged in. Non-admin users cannot see the link to the protected view | Passed |
 | Deleted finishers cannot be accessed | If a user tries to go to a url containing the ID of a deleted finisher, a 404 error should be returned | Passed |
 | Users can only delete finishers that they have authored | Any attempt by a user to delete a finisher that they have not authored will result in a redirect to the dashboard and a flashed message informing them that they cannot delete that finisher | Passed |
+
+All HTML and CSS was validated on the [W3C Markup Validation service](https://validator.w3.org/). All Python code was checked for syntax on [ExtendsClass](https://extendsclass.com/python-tester.html). javascript code was tested on [Esprima](https://esprima.org/demo/validate.html). No errors were shown in the HTML, CSS, JS or Python code.
 
 
 
